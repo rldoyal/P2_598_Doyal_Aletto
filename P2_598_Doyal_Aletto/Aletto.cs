@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 
 
-namespace P2_598_Aletto_Doyal
+namespace P2_598_Doyal_Aletto
 {
     class Aletto
     {
@@ -45,17 +45,11 @@ namespace P2_598_Aletto_Doyal
                 p++;
             }
 
-
-            public double getPrice( )
-            {
-
-            }
-
             //Class used to calculate unit price of a book
     public class PricingModel
     {
         private Int32 numOrders; //Numbers of past orders relevant in pricing model calculation
-        private Queue<OrderObject> orders; //Keeps recent orders in a queue to use in pricing model
+        public Queue<OrderObject> orders; //Keeps recent orders in a queue to use in pricing model
         private TimeSpan reference; //Time object used to determine removal of order objects from queue
         private const double RESTOCK_AMT = 2000; //The number of books ordered when Publisher restocks books
         private const double DEMAND = 3; //Sets demand for how many recent orders have been processed
@@ -88,7 +82,9 @@ namespace P2_598_Aletto_Doyal
 
             //Actual price calculation: combination of number ordered versus number left, 
             //demand created by recent orders, and the size of the order
-            unitPrice += (1 - ((double)o.getAmount()) / RESTOCK_AMT * 50) + (50 * ((double)orders.Count / DEMAND)) + (50 * (2 - ((double)o.getAmount() / AVG_ORDER_SIZE)));
+            unitPrice += (1 - ((double)o.getAmount()) / RESTOCK_AMT * 100) //Number ordered versus number left
+                        + (25 * ((double)orders.Count / DEMAND)) //Number of recent orders compared to a demand benchmark
+                        + (25 * (2 - ((double)o.getAmount() / AVG_ORDER_SIZE))); //Wholesale determination
 
             //Make sure price is below 200 and above 50
             if (unitPrice > 200)
@@ -107,20 +103,6 @@ namespace P2_598_Aletto_Doyal
         public void setNumOrders()
         {
             numOrders = orders.Count;
-        }
-
-        public static void Main(string[] args)
-        {
-            DateTime now = new DateTime();
-            now = DateTime.Now;
-            PricingModel p = new PricingModel();
-
-
-            for (int i = 0; i < 5; i++)
-            {
-                OrderObject o = new OrderObject("sender" + i.ToString(), Math.Random(), "receiver" + i.ToString(), 100, 100, now);
-            }
-
         }
     }
             

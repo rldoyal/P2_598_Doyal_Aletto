@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace P2_598_Aletto_Doyal
+namespace P2_598_Doyal_Aletto
 {
     public class OrderObject
     {

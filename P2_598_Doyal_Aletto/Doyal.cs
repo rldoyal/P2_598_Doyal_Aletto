@@ -8,7 +8,7 @@ using System.Threading;
 // Team Aletto Doyal 598
 // All code in this directory was developed by Roy Doyal
 
-namespace P2_598_Aletto_Doyal
+namespace P2_598_Doyal_Aletto
 {
 
     // Encoder -- turns OrderObject into a string
@@ -16,7 +16,7 @@ namespace P2_598_Aletto_Doyal
     {
 
         public SupplyDemand myDemand = new SupplyDemand();
-        Int32 LastPrice = 0;
+        double LastPrice = 0;
 
         public Bookstore()
         {
@@ -63,7 +63,7 @@ namespace P2_598_Aletto_Doyal
             Int32 CardNo = 5000;
             string ReceiverID = publisherName;
             Int32 amountBooks = myDemand.BooksNeeded();
-            Int32 unitPrice = Program.GV.getCurrentPrice();
+            double unitPrice = Program.GV.getCurrentPrice();
             // Set the last price
             LastPrice = unitPrice;
             DateTime timeStamp = DateTime.Now;
