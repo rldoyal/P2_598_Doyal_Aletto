@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using static P2_598_Doyal_Aletto.Aletto;
 using static P2_598_Doyal_Aletto.Aletto.Publisher;
 
 namespace P2_598_Doyal_Aletto
@@ -52,7 +53,7 @@ namespace P2_598_Doyal_Aletto
         public static void TestPricingModel()
         {
             DateTime now = new DateTime();
-            PricingModel p = new PricingModel();
+            Publisher p = new Publisher();
             Random rdm = new Random();
 
 
@@ -60,16 +61,18 @@ namespace P2_598_Doyal_Aletto
             {
                 now = DateTime.Now;
                 OrderObject o = new OrderObject("sender" + i.ToString(), (Int32)(rdm.NextDouble() * 10000), "receiver" + i.ToString(), (Int32)(rdm.NextDouble() * 200), 100, now);
-                double price = Math.Round(p.calcPrice(o),2);
+                double price = Math.Round(p.getModeler().calcPrice(o),2);
                 Console.WriteLine("ObjectOrder " + o.getSenderId() + " paid $" + price.ToString() 
-                + ". The Publisher has " + p.getNumBooks().ToString() + " books.\n");
+                + ". The number of books in the order was " + o.getAmount() + ". The number of orders in the recent orders " +
+                "queue was " + p.getModeler().getQueue().Count + ". " +
+                "The Publisher has " + getNumBooks().ToString() + " books.\n");
                 o.setUnitPrice(price);
                 System.Threading.Thread.Sleep((Int32)(rdm.NextDouble() * 1000));
             }
 
-            Console.WriteLine("There are " + p.orders.Count.ToString() + " in the recent orders queue.\n");
+            Console.WriteLine("There are " + p.getModeler().getQueue().Count.ToString() + " in the recent orders queue.\n");
 
-            foreach (OrderObject order in p.orders)
+            foreach (OrderObject order in p.getModeler().getQueue())
             {
                 Console.WriteLine("Order " + order.getSenderId() + " paid $" + order.getUnitPrice().ToString() + ".\n");
             }
@@ -81,7 +84,7 @@ namespace P2_598_Doyal_Aletto
 
             Console.WriteLine("Hello World!");
 
-            TestBookStore();
+            //TestBookStore();
 
             TestPricingModel();
 

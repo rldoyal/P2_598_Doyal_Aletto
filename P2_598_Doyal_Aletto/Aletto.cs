@@ -14,20 +14,22 @@ namespace P2_598_Doyal_Aletto
             private static Int32 p; //Counter used to to determine number of price cuts before terminating
             PricingModel modeler; //To be used to calculate per unit cost of a book
             private static Boolean readable; //Flag used to signal 
+            private const Int32 RESTOCK_AMT = 2000; //The number of books ordered when Publisher restocks books
+            
 
 
-            //Constructor
-            public Publisher(Int32 initCounter, Int32 bks)
+            //Publisher Constructor
+            public Publisher()
             {
-                p = initCounter;
+                p = 0;
                 modeler = new PricingModel();
-                books = bks;
-
+                books = RESTOCK_AMT;
+                //runPublisher();
             }
 
 
-            //Thread entry
-            public void runPublisher()
+            //Publisher Thread entry
+            public static void runPublisher()
             {
                 Int32 counter = 0;
                 while (!readable)
@@ -42,106 +44,128 @@ namespace P2_598_Doyal_Aletto
             }
 
             //Increments the counter p
-            public void incrementCounter()
+            public static void incrementCounter()
             {
                 p++;
             }
 
+            //Returns the instance of pricing model class
+            public PricingModel getModeler()
+            {
+                return modeler;
+            }
+
             //Class used to calculate unit price of a book
-    public class PricingModel
-    {
-        private Int32 numOrders; //Numbers of past orders relevant in pricing model calculation
-        public Queue<OrderObject> orders; //Keeps recent orders in a queue to use in pricing model
-        private TimeSpan reference; //Time object used to determine removal of order objects from queue
-        private const Int32 RESTOCK_AMT = 2000; //The number of books ordered when Publisher restocks books
-        private const double DEMAND = 5; //Sets demand for how many recent orders have been processed
-        private const double AVG_ORDER_SIZE = 100; //Reference for the average order size
-
-
-        public PricingModel()
-        {
-            numOrders = 0;
-            orders = new Queue<OrderObject>();
-            reference = new TimeSpan(0, 0, 3);
-        }
-
-        //Calculates the unit price for a book with current market conditions
-        public double calcPrice(OrderObject o)
-        {
-            //Base setting for output to keep final price calculation within 50 to 200
-            double unitPrice = 0;
-            
-            //Determine if a new book order is required based on the current order
-            if(o.getAmount() > books)
+            public class PricingModel
             {
-                setNumBooks(RESTOCK_AMT);
-                Console.WriteLine("The Publisher just restocked books.\n");
-                //************************  TODO: Callback event, lets bookstores know there is a price drop*********************
-            }
+                private Int32 numOrders; //Numbers of past orders relevant in pricing model calculation
+                public Queue<OrderObject> orders; //Keeps recent orders in a queue to use in pricing model
+                private TimeSpan reference; //Time object used to determine removal of order objects from queue
+                private const double DEMAND = 4; //Sets demand for how many recent orders have been processed
+                private const double AVG_ORDER_SIZE = 50; //Reference for the average order size
 
-            //Check to see if any orders are older than the reference timespan
-            Int32 count = 0; //Counts number of OrderObjects that are relatively too old to include in price calculation
-            foreach (OrderObject order in orders)
-            {
-                if (o.getTimestamp() - order.getTimestamp() > reference)
+                //Constructor for the pricing model
+                public PricingModel()
                 {
-                    
-                    count++;
- 
+                    numOrders = 0;
+                    orders = new Queue<OrderObject>();
+                    reference = new TimeSpan(0, 0, 3);
                 }
-            }
 
-            //Deqeue the older OrderObjects
-            while (count != 0)
+                //Calculates the unit price for a book with current market conditions
+                public double calcPrice(OrderObject o)
                 {
+                    //Base setting for output to keep final price calculation within 50 to 200
+                    double unitPrice = 0;
+
+                    //Determine if a new book order is required based on the current order
+                    if (o.getAmount() > books)
+                    {
+                        setNumBooks(RESTOCK_AMT);
+                        incrementCounter();
+                        Console.WriteLine("The Publisher just restocked books.\n");
+                        //************************  TODO: Callback event, lets bookstores know there is a price drop*********************
+                    }
+
+                    //Check to see if any orders are older than the reference timespan
+                    Int32 count = 0; //Counts number of OrderObjects that are relatively too old to include in price calculation
+                    foreach (OrderObject order in orders)
+                    {
+                        if (o.getTimestamp() - order.getTimestamp() > reference)
+                        {
+
+                            count++;
+
+                        }
+                    }
+
+                    //Deqeue the older OrderObjects
+                    while (count != 0)
+                    {
                         orders.Dequeue();
                         count--;
+                    }
+
+                    orders.Enqueue(o); //Put new order in the queue
+                    setNumOrders(); //Set the appropriate number of recent orders
+
+                    //Actual price calculation: combination of number ordered versus number left, 
+                    //demand created by recent orders, and the size of the order
+                    unitPrice +=
+
+                        //Represents demand due to product availability, is bulk of pricing, cannot be more than 150, or less than 40
+                        Math.Max(((1 - ((double)getNumBooks()) / ((double)RESTOCK_AMT)) * 150), 40)
+
+                        //Number of recent orders compared to a demand benchmark, cannot be more than 40 extra
+                        + ((Math.Min((double)orders.Count, DEMAND * 2) / (double)DEMAND) * 20) 
+
+                        //Wholesale determination, cannot be more than 40 extra      
+                        + (((double)AVG_ORDER_SIZE / Math.Max((double)o.getAmount(), AVG_ORDER_SIZE/2)) * 20); 
+
+                    //Subtract the number of books purchased from the supply of books
+                    books = books - o.getAmount();
+
+                    //Make sure price is below 200 and above 50
+                    if (unitPrice > 200)
+                    {
+                        unitPrice = 200;
+                    }
+                    if (unitPrice < 50)
+                    {
+                        unitPrice = 50;
+                    }
+
+                    return unitPrice;
                 }
 
-            orders.Enqueue(o); //Put new order in the queue
-            setNumOrders(); //Set the appropriate number of recent orders
+                //Sets the number of orders
+                public void setNumOrders()
+                {
+                    numOrders = orders.Count;
+                }
 
-            //Actual price calculation: combination of number ordered versus number left, 
-            //demand created by recent orders, and the size of the order
-            unitPrice += (1 - ((double)getNumBooks()) / ((double)RESTOCK_AMT)) * 150 //Number ordered versus number left
-                        + (((double)orders.Count / (double)DEMAND) * 25) //Number of recent orders compared to a demand benchmark
-                        + (((double)o.getAmount() / (double)AVG_ORDER_SIZE) * 25); //Wholesale determination
-            
-            //Subtract the number of books purchased from the supply of books
-            books = books - o.getAmount();
+                //Returns the queue
+                public Queue<OrderObject> getQueue()
+                {
+                    return orders;
+                }
 
-            //Make sure price is below 200 and above 50
-            if (unitPrice > 200)
-            {
-                unitPrice = 200;
-            }
-            if (unitPrice < 50)
-            {
-                unitPrice = 50;
             }
 
-            return unitPrice;
-        }
+            //Returns number of books stocked by publisher
+            public static Int32 getNumBooks()
+            {
+                return books;
+            }
 
-        //Sets the number of orders
-        public void setNumOrders()
-        {
-            numOrders = orders.Count;
-        }
+            //Sets the number of books
+            public static void setNumBooks(Int32 b)
+            {
+                books = b;
+            }
 
-        //Returns number of books stocked by publisher
-        public Int32 getNumBooks(){
-            return books;
-        }
-
-        //Sets the number of books
-        public void setNumBooks(Int32 b){
-            books = b;
-        }
-    }
-            
-        //Class used to instantiate threads to process orders
-        private class OrderProcessing
+            //Class used to instantiate threads to process orders
+            private class OrderProcessing
         {
                  
             public OrderProcessing()

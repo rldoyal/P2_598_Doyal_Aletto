@@ -77,7 +77,7 @@ namespace P2_598_Doyal_Aletto
         }
 
         // Encoder -- turns OrderObject into a CSV string
-        string Encorder(OrderObject order)
+        string Encoder(OrderObject order)
         {
             string orderStr = null;
             // build CSV String
