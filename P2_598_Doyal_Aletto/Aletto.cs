@@ -166,13 +166,24 @@ namespace P2_598_Doyal_Aletto
 
             //Class used to instantiate threads to process orders
             private class OrderProcessing
-        {
-                 
-            public OrderProcessing()
             {
+                 
+                public OrderProcessing()
+                {
 
+                }
             }
-        }
+
+            //Class used to take strings of comma separated values and generate OrderObjects
+            public class Decoder
+            {
+                string message;
+            
+                public Decoder()
+                {
+
+                }
+            }
 
         }
     }
