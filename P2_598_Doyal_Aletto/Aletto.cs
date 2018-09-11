@@ -177,11 +177,57 @@ namespace P2_598_Doyal_Aletto
             //Class used to take strings of comma separated values and generate OrderObjects
             public class Decoder
             {
-                string message;
-            
                 public Decoder()
                 {
+                    
+                }
 
+                //Turns strings handed to the publisher into OrderObjects
+                public OrderObject decode(string s)
+                {
+                    //string array holds the values of the OrderObject
+                    string[] str = s.Split(s);
+
+                    //Try to parse the int32 for the cardId, otherwise exit
+                    Int32 cardId = 0;
+                    if(!Int32.TryParse(str[1], out cardId))
+                    {
+                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.Read();
+                        Environment.Exit(-1);
+                    }
+
+                    //Try to parse the int32 for the number of books, otherwise exit
+                    Int32 numBooks = 0;
+                    if (!Int32.TryParse(str[3], out numBooks))
+                    {
+                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.Read();
+                        Environment.Exit(-1);
+                    }
+
+                    //Try to parse the double for the price of each book, otherwise exit
+                    double price = 0;
+                    if (!double.TryParse(str[4], out price))
+                    {
+                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.Read();
+                        Environment.Exit(-1);
+                    }
+
+                    //Try to parse the double for the price of each book, otherwise exit
+                    DateTime timestamp = new DateTime();
+                    if (!DateTime.TryParse(str[5], out timestamp))
+                    {
+                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.Read();
+                        Environment.Exit(-1);
+                    }
+
+                    //Construct all the pieces into an OrderObject
+                    OrderObject o = new OrderObject(str[0], cardId, str[2], numBooks, price, timestamp);
+
+                    return o;
                 }
             }
 
