@@ -56,14 +56,15 @@ namespace P2_598_Doyal_Aletto
             Random rdm = new Random();
 
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 20; i++)
             {
                 now = DateTime.Now;
-                OrderObject o = new OrderObject("sender" + i.ToString(), (Int32)rdm.NextDouble() * 10000, "receiver" + i.ToString(), 100, 100, now);
-                double price = p.calcPrice(o);
-                Console.WriteLine("ObjectOrder " + o.getSenderId() + "paid $" + price.ToString() + ".\n");
+                OrderObject o = new OrderObject("sender" + i.ToString(), (Int32)(rdm.NextDouble() * 10000), "receiver" + i.ToString(), (Int32)(rdm.NextDouble() * 200), 100, now);
+                double price = Math.Round(p.calcPrice(o),2);
+                Console.WriteLine("ObjectOrder " + o.getSenderId() + " paid $" + price.ToString() 
+                + ". The Publisher has " + p.getNumBooks().ToString() + " books.\n");
                 o.setUnitPrice(price);
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep((Int32)(rdm.NextDouble() * 1000));
             }
 
             Console.WriteLine("There are " + p.orders.Count.ToString() + " in the recent orders queue.\n");

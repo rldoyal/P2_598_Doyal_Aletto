@@ -73,7 +73,7 @@ namespace P2_598_Doyal_Aletto
             receiverId = r;
         }
 
-        //Get amount
+        //Returns number of books in the order
         public Int32 getAmount()
         {
             return amount;
