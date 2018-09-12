@@ -15,7 +15,7 @@ namespace P2_598_Doyal_Aletto
             PricingModel modeler; //To be used to calculate per unit cost of a book
             private static Boolean readable; //Flag used to signal 
             private const Int32 RESTOCK_AMT = 2000; //The number of books ordered when Publisher restocks books
-            
+            Decoder decoder; //Object used to transform strings into OrderObjects
 
 
             //Publisher Constructor
@@ -24,6 +24,7 @@ namespace P2_598_Doyal_Aletto
                 p = 0;
                 modeler = new PricingModel();
                 books = RESTOCK_AMT;
+                decoder = new Decoder();
                 //runPublisher();
             }
 
@@ -81,8 +82,8 @@ namespace P2_598_Doyal_Aletto
                     //Determine if a new book order is required based on the current order
                     if (o.getAmount() > books)
                     {
-                        setNumBooks(RESTOCK_AMT);
-                        incrementCounter();
+                        setNumBooks(RESTOCK_AMT); //Restocks the publisher to the max capacity
+                        incrementCounter(); //Advances the publisher's counter that counts towards thread termination
                         Console.WriteLine("The Publisher just restocked books.\n");
                         //************************  TODO: Callback event, lets bookstores know there is a price drop*********************
                     }
@@ -164,6 +165,12 @@ namespace P2_598_Doyal_Aletto
                 books = b;
             }
 
+            //Returns the decoder object
+            public Decoder getDecoder()
+            {
+                return decoder;
+            }
+
             //Class used to instantiate threads to process orders
             private class OrderProcessing
             {
@@ -192,7 +199,7 @@ namespace P2_598_Doyal_Aletto
                     Int32 cardId = 0;
                     if(!Int32.TryParse(str[1], out cardId))
                     {
-                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.WriteLine("Decoder was unable to decode a message for cardId! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
                     }
@@ -201,7 +208,7 @@ namespace P2_598_Doyal_Aletto
                     Int32 numBooks = 0;
                     if (!Int32.TryParse(str[3], out numBooks))
                     {
-                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.WriteLine("Decoder was unable to decode a message for numBooks! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
                     }
@@ -210,7 +217,7 @@ namespace P2_598_Doyal_Aletto
                     double price = 0;
                     if (!double.TryParse(str[4], out price))
                     {
-                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.WriteLine("Decoder was unable to decode a message for price! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
                     }
@@ -219,7 +226,7 @@ namespace P2_598_Doyal_Aletto
                     DateTime timestamp = new DateTime();
                     if (!DateTime.TryParse(str[5], out timestamp))
                     {
-                        Console.WriteLine("Decoder was unable to decode a message! Program will exit.");
+                        Console.WriteLine("Decoder was unable to decode a message for DateTime! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
                     }

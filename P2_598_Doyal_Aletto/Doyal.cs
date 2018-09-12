@@ -21,9 +21,9 @@ namespace P2_598_Doyal_Aletto
         public Bookstore()
         {
             // setup and start the demand thread
-            Thread demandThread = new Thread(new ThreadStart(myDemand.DemandFunc));
-            demandThread.Name = "1";
-            demandThread.Start();
+            //Thread demandThread = new Thread(new ThreadStart(myDemand.DemandFunc));
+            //demandThread.Name = "1";
+            //demandThread.Start();
             
 
         }
@@ -77,7 +77,7 @@ namespace P2_598_Doyal_Aletto
         }
 
         // Encoder -- turns OrderObject into a CSV string
-        string Encoder(OrderObject order)
+        public string Encoder(OrderObject order)
         {
             string orderStr = null;
             // build CSV String
@@ -86,7 +86,7 @@ namespace P2_598_Doyal_Aletto
             orderStr += "," + order.getReceiverId();
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
-            orderStr += "," + order.getTimestamp();
+            orderStr += "," + order.getTimestamp().ToString();
 
             return orderStr; // return the encoded string just created.
         }

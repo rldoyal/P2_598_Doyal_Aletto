@@ -2,6 +2,7 @@
 using System.Threading;
 using static P2_598_Doyal_Aletto.Aletto;
 using static P2_598_Doyal_Aletto.Aletto.Publisher;
+using static P2_598_Doyal_Aletto.Bookstore;
 
 namespace P2_598_Doyal_Aletto
 {
@@ -78,6 +79,41 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
+        //Tests for the encoder and decoders
+        public static void EncodeDecodeTest()
+        {
+            DateTime now = new DateTime();
+            Publisher p = new Publisher();
+            Random rdm = new Random();
+            Bookstore bookstore = new Bookstore();
+
+            for (int i = 0; i < 20; i++)
+            {
+                now = DateTime.Now;
+                OrderObject o = new OrderObject
+                (
+                "sender" + i.ToString(), //senderId
+                (Int32)(rdm.NextDouble() * 10000), //cardNo
+                "receiver" + i.ToString(), //receiverId
+                (Int32)(rdm.NextDouble() * 200), //amount
+                (Int32)(rdm.NextDouble() * 100), //unitPrice
+                now //timestamp
+                );
+                string str = bookstore.Encoder(o);
+                Console.WriteLine("The OrderObject's actual contents were: " + o.getSenderId() + "," + o.getCardNo().ToString() + ","
+                + o.getReceiverId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
+                Console.WriteLine("The string created by the encoder was: " + str + "\n");
+
+                o = p.getDecoder().decode(str);
+                Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: " 
+                + o.getSenderId() + "," + o.getCardNo().ToString() + ","
+                + o.getReceiverId() + "," + o.getAmount().ToString() + "," 
+                + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString() + "\n");
+
+                System.Threading.Thread.Sleep(50);
+            }
+        }
+
 
         static void Main(string[] args)
         {
@@ -86,7 +122,9 @@ namespace P2_598_Doyal_Aletto
 
             //TestBookStore();
 
-            TestPricingModel();
+            //TestPricingModel();
+
+            EncodeDecodeTest();
 
             Console.Read();
         }
