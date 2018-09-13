@@ -193,12 +193,17 @@ namespace P2_598_Doyal_Aletto
                 public OrderObject decode(string s)
                 {
                     //string array holds the values of the OrderObject
-                    string[] str = s.Split(s);
+                    string[] str = s.Split(',');
 
                     //Try to parse the int32 for the cardId, otherwise exit
                     Int32 cardId = 0;
                     if(!Int32.TryParse(str[1], out cardId))
                     {
+                        for(int i = 0; i < str.Length; i++)
+                        {
+                            Console.WriteLine(str[i] + "\n");
+                        }
+                    
                         Console.WriteLine("Decoder was unable to decode a message for cardId! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
@@ -208,6 +213,11 @@ namespace P2_598_Doyal_Aletto
                     Int32 numBooks = 0;
                     if (!Int32.TryParse(str[3], out numBooks))
                     {
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            Console.WriteLine(str[i] + "\n");
+                        }
+
                         Console.WriteLine("Decoder was unable to decode a message for numBooks! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
@@ -217,6 +227,11 @@ namespace P2_598_Doyal_Aletto
                     double price = 0;
                     if (!double.TryParse(str[4], out price))
                     {
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            Console.WriteLine(str[i] + "\n");
+                        }
+
                         Console.WriteLine("Decoder was unable to decode a message for price! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);
@@ -226,6 +241,11 @@ namespace P2_598_Doyal_Aletto
                     DateTime timestamp = new DateTime();
                     if (!DateTime.TryParse(str[5], out timestamp))
                     {
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            Console.WriteLine(str[i] + "\n");
+                        }
+
                         Console.WriteLine("Decoder was unable to decode a message for DateTime! Program will exit.");
                         Console.Read();
                         Environment.Exit(-1);

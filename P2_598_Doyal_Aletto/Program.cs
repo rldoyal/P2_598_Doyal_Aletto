@@ -102,10 +102,10 @@ namespace P2_598_Doyal_Aletto
                 string str = bookstore.Encoder(o);
                 Console.WriteLine("The OrderObject's actual contents were: " + o.getSenderId() + "," + o.getCardNo().ToString() + ","
                 + o.getReceiverId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
-                Console.WriteLine("The string created by the encoder was: " + str + "\n");
+                Console.WriteLine("The string created by the encoder was: " + str);
 
                 o = p.getDecoder().decode(str);
-                Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: " 
+                Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: \n" 
                 + o.getSenderId() + "," + o.getCardNo().ToString() + ","
                 + o.getReceiverId() + "," + o.getAmount().ToString() + "," 
                 + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString() + "\n");
@@ -122,7 +122,7 @@ namespace P2_598_Doyal_Aletto
 
             //TestBookStore();
 
-            //TestPricingModel();
+            TestPricingModel();
 
             EncodeDecodeTest();
 
