@@ -32,23 +32,29 @@ namespace P2_598_Doyal_Aletto
         {
             Random rnd = new Random();
 
-            Bookstore bs = new Bookstore();
+            Bookstore bs = new Bookstore(1);
+            Bookstore bs1 = new Bookstore(2);
+
             // Start the BookStore Thread
 
             Thread BookStoreThread = new Thread(new ThreadStart(bs.BookStoreFunc));
             BookStoreThread.Name = "1";
             BookStoreThread.Start();
 
+            Thread BookStoreThread1 = new Thread(new ThreadStart(bs1.BookStoreFunc));
+            BookStoreThread1.Name = "2";
+            BookStoreThread1.Start();
+
+
+
             // test the bookstore demand thread.
             for (int i = 0; i < 10; i++)
             {
-                GV.setCurrentPrice(rnd.Next(50, 200));
-               // bs.myDemand.addStoreInventory(rnd.Next(100, 500));
-                Console.WriteLine(" i={0} : inventory = {1}", i, bs.myDemand.getStoreInventory());
+
                 System.Threading.Thread.Sleep(1500);
             }
-            BookStoreThreadRunning = false;
-            bs.myDemand.TurnDemandOff();
+            BookStoreThreadRunning = false; // shut off threads
+
         }
 
         public static void TestPricingModel()
@@ -85,7 +91,7 @@ namespace P2_598_Doyal_Aletto
             DateTime now = new DateTime();
             Publisher p = new Publisher();
             Random rdm = new Random();
-            Bookstore bookstore = new Bookstore();
+            Bookstore bookstore = new Bookstore(1);
 
             for (int i = 0; i < 20; i++)
             {
@@ -120,13 +126,13 @@ namespace P2_598_Doyal_Aletto
 
             Console.WriteLine("Hello World!");
 
-            //TestBookStore();
+            TestBookStore();
 
-            TestPricingModel();
+            //TestPricingModel();
 
-            EncodeDecodeTest();
+            //EncodeDecodeTest();
 
-            Console.Read();
+            //Console.Read();
         }
         
     }

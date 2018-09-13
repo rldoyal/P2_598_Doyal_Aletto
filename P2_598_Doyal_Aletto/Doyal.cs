@@ -15,69 +15,81 @@ namespace P2_598_Doyal_Aletto
     public class Bookstore
     {
 
-        public SupplyDemand myDemand = new SupplyDemand();
-        double LastPrice = 0;
 
-        public Bookstore()
+        private double LastPrice = 200.00;
+        private double CurrentPrice = 0.00;
+        private Int32 StoreNumber = 0;
+        private Int32 StoreInventory = 100;
+        const Int32 MAX_INVENTORY = 1000;  // max number of books the store can hold
+
+
+
+        public Bookstore(int i)
         {
-            // setup and start the demand thread
-            //Thread demandThread = new Thread(new ThreadStart(myDemand.DemandFunc));
-            //demandThread.Name = "1";
-            //demandThread.Start();
-            
-
+            StoreNumber = i;
         }
 
         // functional thread for the bookstore.  It will generate an order every 2 seconds.
         public void BookStoreFunc()
         {
+
+            Aletto.Publisher pub1 = new Aletto.Publisher();
+
             while (Program.BookStoreThreadRunning)
             {
-                // Determine if Ineed to buy books or not.
-                // if book supply is low (below 50), I need to replenish
-                // if diference between last and current price is greater than a 20% drop, I need to buy books
-                // if I don't need books, don't create an order :)
 
-                //if (myDemand.BooksNeeded()>0) // automatically buy books
-                //{
-                // look at the two publisher prices and pick the lowest. 
                 Console.WriteLine("\n\n");
-                OrderObject newOrder = CreateOrder("2");
+
+                //CurrentPrice = pub1.getPrice();
+                SellBooks(); // create demand
+                OrderObject newOrder = CreateOrder("1");
                 if (newOrder != null)
-                    Console.WriteLine("\t\t\t New Order Created... {0},{1},{2},{3},{4},{5}",
-                       newOrder.getSenderId(), newOrder.getCardNo(), newOrder.getReceiverId(), newOrder.getAmount(),
-                       newOrder.getUnitPrice(), newOrder.getTimestamp());
+                    Console.WriteLine("\t\t New Order Created... \n" +
+                            "\t\t\t SenderID : {0}\n" +
+                            "\t\t\t CardNo : {1}\n" +
+                            "\t\t\t Publisher : {2}\n" +
+                            "\t\t\t Amount of Books: {3}\n" +
+                            "\t\t\t Unit Price : {4}\n" +
+                            "\t\t\t Order Placed at : {5}\n",
+                    newOrder.getSenderId(), newOrder.getCardNo(), newOrder.getReceiverId(), newOrder.getAmount(),
+                    newOrder.getUnitPrice(), newOrder.getTimestamp());
                 else
-                    Console.WriteLine("\t\t\t\t *** No order created");
+                    Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
                 //}
-              
-                Thread.Sleep(2000); // sleep for 2 seconds
+                LastPrice = CurrentPrice; // set the last known price
+                Thread.Sleep(1000); // sleep for 2 seconds
             }
+
+            Console.WriteLine("@@@@   BookStoreFunc threaded exited gracefully...Thread Name {0}", Thread.CurrentThread.Name);
 
         }
 
- 
-        OrderObject CreateOrder( string publisherName )
+        public Int32 getStoreInventory()
+        {
+            return StoreInventory;
+        }
+
+        OrderObject CreateOrder(string publisherName)
         {
             string SenderID = Thread.CurrentThread.Name;
             Int32 CardNo = 5000;
             string ReceiverID = publisherName;
-            Int32 amountBooks = myDemand.BooksNeeded();
-            double unitPrice = Program.GV.getCurrentPrice();
+            Int32 amountBooks = BooksNeeded();
             // Set the last price
-            LastPrice = unitPrice;
+
             DateTime timeStamp = DateTime.Now;
             if (amountBooks > 0)
             {
-                OrderObject myObj = new OrderObject(SenderID, CardNo, ReceiverID, amountBooks, unitPrice, timeStamp);
-                myDemand.addStoreInventory(amountBooks); // update the store inventory
+                OrderObject myObj = new OrderObject(SenderID, CardNo, ReceiverID, amountBooks, CurrentPrice, timeStamp);
+                AddStoreInventory(amountBooks); // update the store inventory
                 return myObj;
+
             }
             return null;
         }
 
         // Encoder -- turns OrderObject into a CSV string
-        public string Encoder(OrderObject order)
+        string Encorder(OrderObject order)
         {
             string orderStr = null;
             // build CSV String
@@ -86,73 +98,47 @@ namespace P2_598_Doyal_Aletto
             orderStr += "," + order.getReceiverId();
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
-            orderStr += "," + order.getTimestamp().ToString();
+            orderStr += "," + order.getTimestamp();
 
             return orderStr; // return the encoded string just created.
         }
 
 
-    }
-
-    public class SupplyDemand
-    {
-        const Int32 MaxBookQuanity = 500;  // max number of books allowed in the store
-        static Int32 StoreInventory = 100;  // initial book inventory set at 500.  Max Books = 500.
-        bool NeedDemandThread = true; // variable to start/stop demand thread
-        private Int32 LastPrice = 150; // TODO THis will turn into a function for multiple publishers.
-        public SupplyDemand()
-        {
-
-        }
-        // function to act as demand... 
-        // it will be a thread that consumes a random number of books every 1 second
-        public void DemandFunc()
+        // sell books from the store -- create demand
+        void SellBooks()
         {
             Random rnd = new Random();
-            Int32 RemoveBooks;
-            while (NeedDemandThread)
-            {
-                Thread.Sleep(1000); // sleep for 1 second (1000 ms)
-                RemoveBooks = rnd.Next(5, 250);
-                StoreInventory -= RemoveBooks;  // allow no more than 250 max books per demand
-                Console.WriteLine(" Removed {0} books...", RemoveBooks);
-                if (StoreInventory < 0)
-                    StoreInventory = 25; // don't let the book store get less than 25 books
-            }
-        }
-        public void TurnDemandOff()
-        {
-            NeedDemandThread = false;
+
+            Int32 BooksSold = rnd.Next(0, StoreInventory); //  Might make no sales and might sell all inventory
+            StoreInventory -= BooksSold; // update the inventory
+            Console.WriteLine("Store {0} sold {1} books, new store Inventory {2}", StoreNumber, BooksSold, StoreInventory);
+
         }
 
-        public Int32 getStoreInventory()
+        void AddStoreInventory(Int32 newBooks)
         {
-            return StoreInventory;
-        }
-
-        public void addStoreInventory(Int32 newBooks)
-        {
-            Console.WriteLine("Adding {0} new books.", newBooks);
+            Console.WriteLine("Adding {0} new books.  Thread Name : {1}", newBooks, StoreNumber);
             StoreInventory += newBooks;
         }
 
-        public Int32 BooksNeeded()
+        Int32 BooksNeeded()
         {
             // TODO :  Update this method to include pricing but for now, just do basic
             Int32 booksWanted = 0;
 
             // if we are low on books, 50 or less, then buy some books to get up back to 300 books
-            Console.WriteLine("\t\t Check to see if we need more books last price {0}, current price{1}",
-                LastPrice, Program.GV.getCurrentPrice());
-            if (Program.GV.getCurrentPrice() < LastPrice) 
+            Console.WriteLine("*** Checking to see if we need more books for Store {0}, Inventory {1}, last price {2}, current price{3}",
+                StoreNumber, StoreInventory, LastPrice, CurrentPrice);
+            if (CurrentPrice < LastPrice)
             {
-                double priceDiff = (((double)LastPrice - (double)Program.GV.getCurrentPrice()) / (double)LastPrice);
-                if (priceDiff > .75 ) // fill the store to max
-                    booksWanted = (500 - StoreInventory);
-                else if (priceDiff > .50 ) // fill to 80%
-                    booksWanted = (400 - StoreInventory);
-                else if (priceDiff > .10 ) // fill to 50% capacity
-                    booksWanted = (250 - StoreInventory);
+                double priceDiff = ((LastPrice - CurrentPrice) / LastPrice);
+                Int32 ShelfSpace = MAX_INVENTORY - StoreInventory; // how much space we have on the shelfs for new books
+                if (priceDiff > .75) // fill the store to max
+                    booksWanted = (ShelfSpace);
+                else if (priceDiff > .50) // fill to 50% of shelf space
+                    booksWanted = (ShelfSpace / 2);
+                else if (priceDiff > .10) // fill to 25% capacity
+                    booksWanted = (ShelfSpace / 4);
             }
             // if the booksWanted is negative, then we don't need to purchase.
 
@@ -166,8 +152,9 @@ namespace P2_598_Doyal_Aletto
             return booksWanted;
         }
 
-        
 
     }
 
+
 }
+
