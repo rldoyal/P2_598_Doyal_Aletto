@@ -83,6 +83,7 @@ namespace P2_598_Doyal_Aletto
                     if (!(String.IsNullOrEmpty(buffers[i]))) // make sure cell has data
                     {
                         outStr = buffers[i];
+                        buffers[i] = String.Empty;
                         elementCount--;
                         i = n;
                     }

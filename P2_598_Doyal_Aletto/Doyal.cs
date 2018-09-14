@@ -137,7 +137,7 @@ namespace P2_598_Doyal_Aletto
                     booksWanted = (ShelfSpace);
                 else if (priceDiff > .50) // fill to 50% of shelf space
                     booksWanted = (ShelfSpace / 2);
-                else if (priceDiff > .10) // fill to 25% capacity
+                else if (priceDiff > .25) // fill to 25% capacity
                     booksWanted = (ShelfSpace / 4);
             }
             // if the booksWanted is negative, then we don't need to purchase.
