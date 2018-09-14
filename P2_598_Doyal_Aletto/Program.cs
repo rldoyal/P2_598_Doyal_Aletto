@@ -66,7 +66,7 @@ namespace P2_598_Doyal_Aletto
                 Console.WriteLine("ObjectOrder " + o.getSenderId() + " paid $" + price.ToString() 
                 + ". The number of books in the order was " + o.getAmount() + ". The number of orders in the recent orders " +
                 "queue was " + p.getModeler().getQueue().Count + ". " +
-                "The Publisher has " + getNumBooks().ToString() + " books.\n");
+                "The Publisher has " + p.getBooks().ToString() + " books.\n");
                 o.setUnitPrice(price);
                 System.Threading.Thread.Sleep((Int32)(rdm.NextDouble() * 1000));
             }
