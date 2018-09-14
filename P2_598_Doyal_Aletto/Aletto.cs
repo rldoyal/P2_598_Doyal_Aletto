@@ -72,6 +72,9 @@ namespace P2_598_Doyal_Aletto
                 Console.WriteLine("The Publisher just restocked books.\n");
                 //************************  TODO: Callback event, lets bookstores know there is a price drop*********************
             }
+
+            //Subtract the number of books purchased from the supply of books
+            books = books - numOrdered;
         }
 
         //Class used to calculate unit price of a book
@@ -132,8 +135,7 @@ namespace P2_598_Doyal_Aletto
                     //Wholesale determination, cannot be more than 40 extra      
                     //+ (((double)AVG_ORDER_SIZE / Math.Max((double)o.getAmount(), AVG_ORDER_SIZE/2)) * 20); 
 
-                //Subtract the number of books purchased from the supply of books
-                books = books - o.getAmount();
+                
 
                 //Make sure price is below 200 and above 50
                 if (unitPrice > 200)
@@ -187,6 +189,11 @@ namespace P2_598_Doyal_Aletto
             public OrderProcessing()
             {
 
+            }
+
+            public static void OrderProcessingThread()
+            {
+                
             }
         }
 

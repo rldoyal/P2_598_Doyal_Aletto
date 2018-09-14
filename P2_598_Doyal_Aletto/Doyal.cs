@@ -89,9 +89,9 @@ namespace P2_598_Doyal_Aletto
         }
 
         // Encoder -- turns OrderObject into a CSV string
-        string Encorder(OrderObject order)
+        public String Encoder(OrderObject order)
         {
-            string orderStr = null;
+            String orderStr = null;
             // build CSV String
             orderStr = order.getSenderId();
             orderStr += "," + order.getCardNo().ToString();
