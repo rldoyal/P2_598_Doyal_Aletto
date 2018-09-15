@@ -37,13 +37,17 @@ namespace P2_598_Doyal_Aletto
 
 
         //Publisher Thread entry
-        public static void runPublisher()
+        public void runPublisher()
         {
             String bufferedString = String.Empty;
             while (p < 20)
             {
-                bufferedString = Program.mcb.getOneCell();
-                if (bufferedString)
+                bufferedString = Program.mcb.getOneCell(name);
+                if (!String.IsNullOrEmpty(bufferedString))
+                {
+                    OrderObject obj = decoder.decode(bufferedString);
+                    decrementBooks(obj.getAmount());
+                }
                 Thread.Sleep(SLEEP_TIME);
             }
         }
