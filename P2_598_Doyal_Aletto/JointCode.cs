@@ -5,10 +5,48 @@ using System.Threading;
 
 namespace P2_598_Doyal_Aletto
 {
+
+    public class BufferString
+    {
+        private string bufferStr;
+        private Int32 publisherNumber;
+
+        public BufferString()
+        {
+            publisherNumber = 0;
+            bufferStr = String.Empty;
+        }
+        public void setBufferString(string str, Int32 pubNum)
+        {
+
+            bufferStr = str;
+            publisherNumber = pubNum;
+
+        }
+
+        public string getBufferString()
+        {
+
+            publisherNumber = 0; // null out the publisher
+            return bufferStr;
+        }
+
+        public Int32 getPublisherNum()
+        {
+            return publisherNumber;
+        }
+
+        public void Reset()  // reset the values
+        {
+            publisherNumber = 0;
+            bufferStr = String.Empty;
+        }
+    }
+
     public class MultiCellBuffer
     {
-        public String[] buffers;
-        private const int N = 3;
+        public BufferString[] buffers;
+        private const int N = 5;
         private int n; // number of cells
         private int elementCount;
         private static Semaphore write_pool;
@@ -26,12 +64,12 @@ namespace P2_598_Doyal_Aletto
                     this.n = n;
                     write_pool = new Semaphore(n, n);
                     read_pool = new Semaphore(n, n);
-                    buffers = new String[N];
+                    buffers = new BufferString[3];
 
 
                     for (int i = 0; i < n; i++)
                     {
-                        buffers[i] = String.Empty;
+                        buffers[i] = new BufferString();
 
                     }
                 }
@@ -40,7 +78,7 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
-        public void setOneCell(String data)
+        public void setOneCell(BufferString data)
         {
             write_pool.WaitOne();
 
@@ -53,7 +91,7 @@ namespace P2_598_Doyal_Aletto
 
                 for (int i = 0; i < n; i++)
                 {
-                    if ((String.IsNullOrEmpty(buffers[i])))// make sure empty
+                    if (buffers[i].getPublisherNum() == 0) // make sure empty
                     {
                         buffers[i] = data;
                         elementCount++;
@@ -65,9 +103,9 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
-        public String getOneCell()
+        public String getOneCell( Int32 pubNum)
         {
-            String outStr = String.Empty;
+            String outStr = null;
             read_pool.WaitOne();
 
             lock (this)
@@ -80,10 +118,10 @@ namespace P2_598_Doyal_Aletto
                 for (int i = 0; i < n; i++)
                 {
 
-                    if (!(String.IsNullOrEmpty(buffers[i]))) // make sure cell has data
+                    if (buffers[i].getPublisherNum() == pubNum) // make sure the data cell has a value for that publsiher
                     {
-                        outStr = buffers[i];
-                        buffers[i] = String.Empty;
+                        outStr = buffers[i].getBufferString();
+                        buffers[i].Reset();
                         elementCount--;
                         i = n;
                     }

@@ -33,7 +33,6 @@ namespace P2_598_Doyal_Aletto
         public void BookStoreFunc()
         {
 
-            Aletto.Publisher pub1 = new Aletto.Publisher();
 
             while (Program.BookStoreThreadRunning)
             {
@@ -42,7 +41,7 @@ namespace P2_598_Doyal_Aletto
 
                 //CurrentPrice = pub1.getPrice();
                 SellBooks(); // create demand
-                OrderObject newOrder = CreateOrder("1");
+                OrderObject newOrder = CreateOrder(1);
                 if (newOrder != null)
                     Console.WriteLine("\t\t New Order Created... \n" +
                             "\t\t\t SenderID : {0}\n" +
@@ -51,8 +50,10 @@ namespace P2_598_Doyal_Aletto
                             "\t\t\t Amount of Books: {3}\n" +
                             "\t\t\t Unit Price : {4}\n" +
                             "\t\t\t Order Placed at : {5}\n",
-                    newOrder.getSenderId(), newOrder.getCardNo(), newOrder.getReceiverId(), newOrder.getAmount(),
-                    newOrder.getUnitPrice(), newOrder.getTimestamp());
+                        newOrder.getSenderId(), newOrder.getCardNo(), newOrder.getReceiverId(), newOrder.getAmount(),
+                        newOrder.getUnitPrice(), newOrder.getTimestamp());
+
+                
                 else
                     Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
                 //}
@@ -69,18 +70,17 @@ namespace P2_598_Doyal_Aletto
             return StoreInventory;
         }
 
-        OrderObject CreateOrder(string publisherName)
+        OrderObject CreateOrder(Int32 pubID)
         {
             string SenderID = Thread.CurrentThread.Name;
-            Int32 CardNo = 5000;
-            string ReceiverID = publisherName;
+            Int32 CardNo = 5000 + pubID;
             Int32 amountBooks = BooksNeeded();
             // Set the last price
 
             DateTime timeStamp = DateTime.Now;
             if (amountBooks > 0)
             {
-                OrderObject myObj = new OrderObject(SenderID, CardNo, ReceiverID, amountBooks, CurrentPrice, timeStamp);
+                OrderObject myObj = new OrderObject(SenderID, CardNo, pubID, amountBooks, CurrentPrice, timeStamp);
                 AddStoreInventory(amountBooks); // update the store inventory
                 return myObj;
 
@@ -95,10 +95,11 @@ namespace P2_598_Doyal_Aletto
             // build CSV String
             orderStr = order.getSenderId();
             orderStr += "," + order.getCardNo().ToString();
-            orderStr += "," + order.getReceiverId();
+            orderStr += "," + order.getReceiverId().ToString();
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
             orderStr += "," + order.getTimestamp();
+            orderStr += "," + order.getMilliseconds().ToString();
 
             return orderStr; // return the encoded string just created.
         }
