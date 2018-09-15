@@ -66,13 +66,13 @@ namespace P2_598_Doyal_Aletto
         }
 
         //Get receiverId
-        public Int32 getReceiverId()
+        public Int32 getPurlisherId()
         {
             return publisherId;
         }
 
         //Set receiverId
-        public void setReceiverId(Int32 r)
+        public void getPurlisherId(Int32 r)
         {
             publisherId = r;
         }
