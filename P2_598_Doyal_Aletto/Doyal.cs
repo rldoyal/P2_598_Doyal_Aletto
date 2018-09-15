@@ -48,6 +48,7 @@ namespace P2_598_Doyal_Aletto
                 // check for lowest price
                 double p1 = Program.GV.get_Pub1_Price();
                 double P2 = Program.GV.get_Pub2_Price();
+                Console.WriteLine(" pub1 price : {0}, pub2 price : {1}", p1, P2);
                 if (p1 < P2)
                 {
                     PubNum = 1;
@@ -180,7 +181,46 @@ namespace P2_598_Doyal_Aletto
             return booksWanted;
         }
 
+        // event handlers
+        // Price cut event
+        public void BookSale(int PubNum, double price)
+        {
+            // books are on sale for a price.
+            // see if I want to buy at that price
+            OrderObject newOrder = CreateOrder(PubNum);
 
+            if (newOrder != null)
+            {
+                Console.WriteLine("\t\t New Order Created... \n" +
+                    "\t\t\t SenderID : {0}\n" +
+                    "\t\t\t CardNo : {1}\n" +
+                    "\t\t\t Publisher : {2}\n" +
+                    "\t\t\t Amount of Books: {3}\n" +
+                    "\t\t\t Unit Price : {4}\n" +
+                    "\t\t\t Order Placed at : {5}\n",
+                newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPurlisherId(), newOrder.getAmount(),
+                newOrder.getUnitPrice(), newOrder.getTimestamp());
+                // encode the order object
+                String eOrder = Encoder(newOrder);
+                // add to multicell buffer
+                BufferString mybString = new BufferString();
+                mybString.setBufferString(eOrder, PubNum);
+                Program.mcb.setOneCell(mybString); // order the books.
+            }
+
+        }
+
+        // event for a completed order
+        public void CompletedSale(Int32 BookStore, Int32 Publisher, Int32 NumBooks, double UnitPrice, double totalPrice, long createTime, long CompleteTime)
+        {
+            // see if I need to deal with this event
+            if (BookStore == StoreNumber)
+            {
+                Console.WriteLine("Completed Order for Store {0}", BookStore);
+                Console.WriteLine("\tPublisher {0}\n\tNumber of Books {1}\n\tUnit Price : {2:C}", Publisher, NumBooks, UnitPrice);
+                Console.WriteLine("\tTotal Price (With Tax and Shipping) : {0:C}\n\tOrder was created in {1} milliseconds", totalPrice, (CompleteTime - createTime));
+            }
+        }
     }
 
 

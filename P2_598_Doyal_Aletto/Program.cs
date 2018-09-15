@@ -115,9 +115,13 @@ namespace P2_598_Doyal_Aletto
                 System.Threading.Thread.Sleep(1500);
 
                 String p1s = mcb.getOneCell(1);
+                Console.WriteLine("\t\t\t\t\t getoneCell(1) : {0}", p1s);
                 p1s = mcb.getOneCell(1);
+                Console.WriteLine("\t\t\t\t\t getoneCell(1) : {0}", p1s);
                 String p2s = mcb.getOneCell(2);
-                p1s = mcb.getOneCell(2);
+                Console.WriteLine("\t\t\t\t\t getoneCell(2) : {0}", p2s);
+                p2s = mcb.getOneCell(2);
+                Console.WriteLine("\t\t\t\t\t getoneCell(2) : {0}", p2s);
 
 
             }
@@ -128,7 +132,7 @@ namespace P2_598_Doyal_Aletto
         public static void TestPricingModel()
         {
             DateTime now = new DateTime();
-            Publisher p = new Publisher(1, 5.23);
+            Publisher p = new Publisher(1);
             Random rdm = new Random();
 
 
@@ -157,7 +161,7 @@ namespace P2_598_Doyal_Aletto
         public static void EncodeDecodeTest()
         {
             DateTime now = new DateTime();
-            Publisher p = new Publisher( 1, 5.50);
+            Publisher p = new Publisher( 1);
             Random rdm = new Random();
             Bookstore bookstore = new Bookstore(1);
 
@@ -193,12 +197,35 @@ namespace P2_598_Doyal_Aletto
         static void Main(string[] args)
         {
 
-            Console.WriteLine("Hello World!");
+            const Int32 NumStores = 5;
+
 
             // create the multi cell buffer
              mcb = new MultiCellBuffer(3);
 
-            TestBookStore();
+            Publisher publisher1 = new Publisher(1);
+            Publisher publisher2 = new Publisher(2);
+
+            
+            // start the publisher threads
+            Thread P1 = new Thread(new ThreadStart(publisher1.runPublisher));
+            Thread P2 = new Thread(new ThreadStart(publisher2.runPublisher));
+            P1.Start();
+            P2.Start();
+
+           
+
+            Thread[] retailStores = new Thread[NumStores];
+            for (int i=0; i < NumStores; i++)
+            {
+                // start n retail stores
+                Bookstore bs = new Bookstore(i);
+                retailStores[i] = new Thread(new ThreadStart(bs.BookStoreFunc));
+                retailStores[i].Start();
+            }
+
+
+            //TestBookStore();
 
             //TestPricingModel();
 
