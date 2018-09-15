@@ -103,7 +103,7 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
-        public String getOneCell( Int32 pubNum)
+        public String getOneCell(Int32 pubNum)
         {
             String outStr = null;
             read_pool.WaitOne();
