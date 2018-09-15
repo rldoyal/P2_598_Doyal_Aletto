@@ -51,6 +51,7 @@ namespace P2_598_Doyal_Aletto
         public void runPublisher()
         {
             String bufferedString = String.Empty;
+            Int32 count = 0;
             while (p < 20)
             {
                 bufferedString = Program.mcb.getOneCell(name);
@@ -69,47 +70,71 @@ namespace P2_598_Doyal_Aletto
                     //Used if publisher had to restock books and a price drop resulted
                     if(books == RESTOCK_AMT)
                     {
-                        if(name == 1)
+                        count = 0;
+                        if (name == 1)
                         {
-                            currentPrice = modeler.calcPrice(obj);
-                            Program.GV.set_Pub1_Price(currentPrice);
-                            priceCutEvent(Program.GV.get_Pub1_Price(), name);
+                            currentPrice = modeler.calcPrice(obj); //Calculate new price and store in local variable
+                            Program.GV.set_Pub1_Price(currentPrice); //Push new price up to the global variable
+                            priceCutEvent(currentPrice, name); //Issue price cut event
                         }
                         else
                         {
-                            currentPrice = modeler.calcPrice(obj);
-                            Program.GV.set_Pub2_Price(currentPrice);
-                            priceCutEvent(Program.GV.get_Pub2_Price(), name);
+                            currentPrice = modeler.calcPrice(obj); //Calculate new price and store in local variable
+                            Program.GV.set_Pub2_Price(currentPrice); //Push new price up to the global variable
+                            priceCutEvent(currentPrice, name); //Issue price cut event
                         }
                     }
 
                     //Used if no restock was performed
                     else
                     {
-                        
+                        count = 0;
                         if (name == 1)
                         {
-                            Program.GV.set_Pub1_Price(modeler.calcPrice(obj));
+                            double temp = currentPrice;
+                            currentPrice = modeler.calcPrice(obj); //Calculate new price and store in local variable
+
+
+                            Program.GV.set_Pub1_Price(currentPrice); //Push local price to global variable
 
                             //Issue a price cut event if the price dropped by 25%
-                            if((1 - currentPrice / Program.GV.get_Pub1_Price()) >= .25)
+                            if((1 - temp / currentPrice) >= .25)
                             {
-                                currentPrice = Program.GV.get_Pub1_Price();
                                 priceCutEvent(currentPrice, name);
                             }
                         }
                         else
                         {
-                            Program.GV.set_Pub2_Price(modeler.calcPrice(obj));
-
+                            double temp = currentPrice;
+                            currentPrice = modeler.calcPrice(obj); //Calculate new price and store in local variable
+                            Program.GV.set_Pub2_Price(currentPrice);
+                            
                             //Issue a price cut event if the price dropped by 25%
-                            if ((1 - currentPrice / Program.GV.get_Pub2_Price()) >= .25)
+                            if (1 - (temp / currentPrice) >= .25)
                             {
                                 currentPrice = Program.GV.get_Pub2_Price();
                                 priceCutEvent(currentPrice, name);
                             }
                         }
                     }
+                }
+
+                count++;
+                if (count == 3)
+                {
+                    if (name == 1)
+                    {
+                        setNumBooks(RESTOCK_AMT);
+                        currentPrice = modeler.getUnitPrice();
+                        Program.GV.set_Pub1_Price(currentPrice);
+                    }
+                    else
+                    {
+                        setNumBooks(RESTOCK_AMT);
+                        currentPrice = modeler.getUnitPrice();
+                        Program.GV.set_Pub2_Price(currentPrice);
+                    }
+                    
                 }
                 Thread.Sleep(SLEEP_TIME);
             }
