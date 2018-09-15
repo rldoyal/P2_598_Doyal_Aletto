@@ -180,13 +180,13 @@ namespace P2_598_Doyal_Aletto
                 );
                 string str = bookstore.Encoder(o);
                 Console.WriteLine("The OrderObject's actual contents were: " + o.getBookStoreId()+"," + o.getCardNo().ToString() + ","
-                + o.getPurlisherId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
+                + o.getPublisherId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
                 Console.WriteLine("The string created by the encoder was: " + str);
 
                 o = p.getDecoder().decode(str);
                 Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: \n" 
                 + o.getBookStoreId() + "," + o.getCardNo().ToString() + ","
-                + o.getPurlisherId() + "," + o.getAmount().ToString() + "," 
+                + o.getPublisherId() + "," + o.getAmount().ToString() + "," 
                 + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString() + "\n");
 
                 System.Threading.Thread.Sleep(50);
