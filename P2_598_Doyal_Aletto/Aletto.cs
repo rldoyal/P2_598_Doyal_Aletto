@@ -98,7 +98,7 @@ namespace P2_598_Doyal_Aletto
                             Program.GV.set_Pub1_Price(currentPrice); //Push local price to global variable
 
                             //Issue a price cut event if the price dropped by 25%
-                            if((1 - temp / currentPrice) >= .25)
+                            if((1 - currentPrice / temp) >= .25)
                             {
                                 priceCutEvent(currentPrice, name);
                             }
@@ -110,7 +110,7 @@ namespace P2_598_Doyal_Aletto
                             Program.GV.set_Pub2_Price(currentPrice);
                             
                             //Issue a price cut event if the price dropped by 25%
-                            if (1 - (temp / currentPrice) >= .25)
+                            if (1 - (currentPrice/ temp) >= .25)
                             {
                                 currentPrice = Program.GV.get_Pub2_Price();
                                 priceCutEvent(currentPrice, name);
