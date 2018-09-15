@@ -89,6 +89,11 @@ namespace P2_598_Doyal_Aletto
             Bookstore bs = new Bookstore(1);
             Bookstore bs1 = new Bookstore(2);
 
+            // set initial book prices
+            GV.set_Pub1_Price(rnd.NextDouble() * (200-20)+20);
+            GV.set_Pub2_Price(rnd.NextDouble() * (200 - 20) + 20);
+
+
             // Start the BookStore Thread
 
             Thread BookStoreThread = new Thread(new ThreadStart(bs.BookStoreFunc));
@@ -104,8 +109,17 @@ namespace P2_598_Doyal_Aletto
             // test the bookstore demand thread.
             for (int i = 0; i < 10; i++)
             {
-
+                GV.set_Pub1_Price(rnd.NextDouble() * (200 - 20) + 20);
+                GV.set_Pub2_Price(rnd.NextDouble() * (200 - 20) + 20);
+               
                 System.Threading.Thread.Sleep(1500);
+
+                String p1s = mcb.getOneCell(1);
+                p1s = mcb.getOneCell(1);
+                String p2s = mcb.getOneCell(2);
+                p1s = mcb.getOneCell(2);
+
+
             }
             BookStoreThreadRunning = false; // shut off threads
 
@@ -114,16 +128,16 @@ namespace P2_598_Doyal_Aletto
         public static void TestPricingModel()
         {
             DateTime now = new DateTime();
-            Publisher p = new Publisher(1);
+            Publisher p = new Publisher(1, 5.23);
             Random rdm = new Random();
 
 
             for (int i = 0; i < 20; i++)
             {
                 now = DateTime.Now;
-                OrderObject o = new OrderObject("sender" + i.ToString(), (Int32)(rdm.NextDouble() * 10000), "receiver" + i.ToString(), (Int32)(rdm.NextDouble() * 200), 100, now);
+                OrderObject o = new OrderObject(i, (Int32)(rdm.NextDouble() * 10000), i, (Int32)(rdm.NextDouble() * 200), 100, now, DateTime.Now.Millisecond);
                 double price = Math.Round(p.getModeler().calcPrice(o),2);
-                Console.WriteLine("ObjectOrder " + o.getSenderId() + " paid $" + price.ToString() 
+                Console.WriteLine("ObjectOrder " + o.getBookStoreId() + " paid $" + price.ToString() 
                 + ". The number of books in the order was " + o.getAmount() + ". The number of orders in the recent orders " +
                 "queue was " + p.getModeler().getQueue().Count + ". " +
                 "The Publisher has " + p.getBooks().ToString() + " books.\n");
@@ -135,7 +149,7 @@ namespace P2_598_Doyal_Aletto
 
             foreach (OrderObject order in p.getModeler().getQueue())
             {
-                Console.WriteLine("Order " + order.getSenderId() + " paid $" + order.getUnitPrice().ToString() + ".\n");
+                Console.WriteLine("Order " + order.getBookStoreId() + " paid $" + order.getUnitPrice().ToString() + ".\n");
             }
         }
 
@@ -143,7 +157,7 @@ namespace P2_598_Doyal_Aletto
         public static void EncodeDecodeTest()
         {
             DateTime now = new DateTime();
-            Publisher p = new Publisher();
+            Publisher p = new Publisher( 1, 5.50);
             Random rdm = new Random();
             Bookstore bookstore = new Bookstore(1);
 
@@ -152,22 +166,23 @@ namespace P2_598_Doyal_Aletto
                 now = DateTime.Now;
                 OrderObject o = new OrderObject
                 (
-                "sender" + i.ToString(), //senderId
+                i, //senderId
                 (Int32)(rdm.NextDouble() * 10000), //cardNo
-                "receiver" + i.ToString(), //receiverId
+                i, //receiverId
                 (Int32)(rdm.NextDouble() * 200), //amount
                 (Int32)(rdm.NextDouble() * 100), //unitPrice
-                now //timestamp
+                now, //timestamp,
+                DateTime.Now.Millisecond
                 );
                 string str = bookstore.Encoder(o);
                 Console.WriteLine("The OrderObject's actual contents were: " + o.getBookStoreId()+"," + o.getCardNo().ToString() + ","
-                + o.getReceiverId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
+                + o.getPurlisherId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
                 Console.WriteLine("The string created by the encoder was: " + str);
 
                 o = p.getDecoder().decode(str);
                 Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: \n" 
                 + o.getBookStoreId() + "," + o.getCardNo().ToString() + ","
-                + o.getReceiverId() + "," + o.getAmount().ToString() + "," 
+                + o.getPurlisherId() + "," + o.getAmount().ToString() + "," 
                 + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString() + "\n");
 
                 System.Threading.Thread.Sleep(50);

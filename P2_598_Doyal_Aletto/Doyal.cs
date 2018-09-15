@@ -38,11 +38,29 @@ namespace P2_598_Doyal_Aletto
             {
 
                 Console.WriteLine("\n\n");
-
+                OrderObject newOrder;
+                int PubNum = 0;
                 //CurrentPrice = pub1.getPrice();
                 
                 SellBooks(); // create demand
-                OrderObject newOrder = CreateOrder(1);
+                
+
+                // check for lowest price
+                double p1 = Program.GV.get_Pub1_Price();
+                double P2 = Program.GV.get_Pub2_Price();
+                if (p1 < P2)
+                {
+                    PubNum = 1;
+                    CurrentPrice = p1;
+                }
+                else
+                {
+                    PubNum = 2;
+                    CurrentPrice = P2;
+                }
+
+                 newOrder = CreateOrder(PubNum);
+
                 if (newOrder != null)
                 { 
                     Console.WriteLine("\t\t New Order Created... \n" +
@@ -52,14 +70,14 @@ namespace P2_598_Doyal_Aletto
                         "\t\t\t Amount of Books: {3}\n" +
                         "\t\t\t Unit Price : {4}\n" +
                         "\t\t\t Order Placed at : {5}\n",
-                    newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getReceiverId(), newOrder.getAmount(),
+                    newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPurlisherId(), newOrder.getAmount(),
                     newOrder.getUnitPrice(), newOrder.getTimestamp());
                 // encode the order object
                  String eOrder = Encoder(newOrder);
                     // add to multicell buffer
                     BufferString mybString = new BufferString();
-                    mybString.setBufferString( eOrder, )
-
+                    mybString.setBufferString(eOrder, PubNum);
+                    Program.mcb.setOneCell(mybString);
             }
                 
                 else
@@ -104,7 +122,7 @@ namespace P2_598_Doyal_Aletto
             // build CSV String
             orderStr = order.getBookStoreId().ToString(); ;
             orderStr += "," + order.getCardNo().ToString();
-            orderStr += "," + order.getReceiverId().ToString();
+            orderStr += "," + order.getPurlisherId().ToString();
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
             orderStr += "," + order.getTimestamp();
