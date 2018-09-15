@@ -25,11 +25,11 @@ namespace P2_598_Doyal_Aletto
             amount = numBooks;
             unitPrice = price;
             timestamp = DateTime.Now;
-            milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            milliseconds = DateTime.Now.Millisecond;
         }
 
         //Constructor to be used by the decoder
-        public OrderObject(Int32 bsNum, Int32 cNum, Int32 recId, Int32 numBooks, double price, DateTime now)
+        public OrderObject(Int32 bsNum, Int32 cNum, Int32 recId, Int32 numBooks, double price, DateTime now, long ms)
         {
             bookStoreId = bsNum;
             cardNo = cNum;
@@ -37,16 +37,18 @@ namespace P2_598_Doyal_Aletto
             amount = numBooks;
             unitPrice = price;
             timestamp = now;
+            milliseconds = ms;
+
         }
 
         //Get senderId
-        public Int32 getSenderId()
+        public Int32 getBookStoreId()
         {
             return bookStoreId;
         }
 
         //Set senderId
-        public void setSenderId(Int32 s)
+        public void setBookStoreId(Int32 s)
         {
             bookStoreId = s;
         }

@@ -28,12 +28,13 @@ namespace P2_598_Doyal_Aletto
     {
         public static GlobalVariables GV = new GlobalVariables();
         public static bool BookStoreThreadRunning = true;
+        public static MultiCellBuffer mcb;
         public static void TestBookStore()
+ 
         {
             Random rnd = new Random();
 
-            // create the multi cell buffer
-            MultiCellBuffer mcb = new MultiCellBuffer(3);
+            
 
             Bookstore bs = new Bookstore(1);
             Bookstore bs1 = new Bookstore(2);
@@ -109,13 +110,13 @@ namespace P2_598_Doyal_Aletto
                 now //timestamp
                 );
                 string str = bookstore.Encoder(o);
-                Console.WriteLine("The OrderObject's actual contents were: " + o.getSenderId() + "," + o.getCardNo().ToString() + ","
+                Console.WriteLine("The OrderObject's actual contents were: " + o.getBookStoreId()+"," + o.getCardNo().ToString() + ","
                 + o.getReceiverId() + "," + o.getAmount().ToString() + "," + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString());
                 Console.WriteLine("The string created by the encoder was: " + str);
 
                 o = p.getDecoder().decode(str);
                 Console.WriteLine("The Decoder created another OrderObject from the string created by the encoder whose contents were: \n" 
-                + o.getSenderId() + "," + o.getCardNo().ToString() + ","
+                + o.getBookStoreId() + "," + o.getCardNo().ToString() + ","
                 + o.getReceiverId() + "," + o.getAmount().ToString() + "," 
                 + o.getUnitPrice().ToString() + "," + o.getTimestamp().ToString() + "\n");
 
@@ -128,6 +129,9 @@ namespace P2_598_Doyal_Aletto
         {
 
             Console.WriteLine("Hello World!");
+
+            // create the multi cell buffer
+             mcb = new MultiCellBuffer(3);
 
             TestBookStore();
 
