@@ -33,17 +33,17 @@ namespace P2_598_Doyal_Aletto
             books = RESTOCK_AMT;
             decoder = new Decoder();
             name = label;
-            
         }
 
 
         //Publisher Thread entry
         public static void runPublisher()
         {
-            string bufferedString;
+            String bufferedString = String.Empty;
             while (p < 20)
             {
-                if()
+                bufferedString = Program.mcb.getOneCell();
+                if (bufferedString)
                 Thread.Sleep(SLEEP_TIME);
             }
         }
@@ -115,7 +115,6 @@ namespace P2_598_Doyal_Aletto
             private TimeSpan reference; //Time object used to determine removal of order objects from queue
             private const double DEMAND = 4; //Sets demand for how many recent orders have been processed
             //private const double AVG_ORDER_SIZE = 50; //Reference for the average order size
-            
 
             //Constructor for the pricing model
             public PricingModel()
@@ -128,7 +127,6 @@ namespace P2_598_Doyal_Aletto
             //Calculates the unit price for a book with current market conditions
             public double calcPrice(OrderObject o)
             {
-            
                 //Base setting for output to keep final price calculation within 50 to 200
                 double unitPrice = 0;
 
@@ -138,7 +136,9 @@ namespace P2_598_Doyal_Aletto
                 {
                     if (o.getTimestamp() - order.getTimestamp() > reference)
                     {
+
                         count++;
+
                     }
                 }
 
@@ -160,17 +160,17 @@ namespace P2_598_Doyal_Aletto
             //demand created by recent orders
             public double getUnitPrice()
             {
-                
-                double unitPrice =
+
+                double unitPrice = 0;
+                //Actual price calculation: combination of number ordered versus number left, 
+                //demand created by recent orders, and the size of the order
+                unitPrice +=
 
                     //Represents demand due to product availability, is bulk of pricing, cannot be more than 150, or less than 40
                     Math.Max(((1 - ((double)getNumBooks()) / ((double)RESTOCK_AMT)) * 150), 40)
 
                     //Number of recent orders compared to a demand benchmark, cannot be more than 40 extra
                     + ((Math.Min((double)getQueue().Count, DEMAND * 2) / (double)DEMAND) * 25);
-
-                    //Wholesale determination, cannot be more than 40 extra      
-                    //+ (((double)AVG_ORDER_SIZE / Math.Max((double)o.getAmount(), AVG_ORDER_SIZE/2)) * 20); 
 
                 //Make sure price is below 200 and above 50
                 if (unitPrice > 200)
@@ -183,8 +183,8 @@ namespace P2_598_Doyal_Aletto
                 }
 
                 return unitPrice;
-            }
 
+            }
             //Sets the number of orders
             public void setNumOrders()
             {
@@ -201,8 +201,8 @@ namespace P2_598_Doyal_Aletto
 
         //Class used to instantiate threads to process orders
         private class OrderProcessing
-        { 
-        
+        {
+                 
             public OrderProcessing()
             {
 
@@ -211,22 +211,18 @@ namespace P2_598_Doyal_Aletto
             //Thread entry point for OrderProcessing object
             public static void OrderProcessingThread(OrderObject obj)
             {
-                            
                 //Validate the credit card number
-                if(obj.getCardNo() > 6000 || obj.getCardNo() < 5000)
+                if (obj.getCardNo() > 6000 || obj.getCardNo() < 5000)
                 {
                     Console.WriteLine("OrderProcessingThread found an invalid credit card number, order not processed.");
                     return;
                 }
 
                 //Calculate total price
-                double totalPrice = 
+                double totalPrice =
                     obj.getAmount() * obj.getUnitPrice() //Unit price multiplied by total quantity of books ordered
                     + obj.getAmount() * obj.getUnitPrice() * TAX_RATE //Add tax rate
-                    + (obj.getBookstoreId() * SHIPPING_PREMIUM); //Add shipping cost, assumed higher numbered bookstores are further away
-                
-               
-
+                    + (obj.getBookStoreId() * SHIPPING_PREMIUM); //Add shipping cost, assumed higher numbered bookstores are further away
             }
         }
 
@@ -246,7 +242,7 @@ namespace P2_598_Doyal_Aletto
 
                 //Try to parse the int32 for the bookstoreId, otherwise exit
                 Int32 bookstoreId = 0;
-                if (!Int32.TryParse(str[1], out bookstoreId))
+                if (!Int32.TryParse(str[0], out bookstoreId))
                 {
                     for (int i = 0; i < str.Length; i++)
                     {
@@ -268,6 +264,20 @@ namespace P2_598_Doyal_Aletto
                     }
                     
                     Console.WriteLine("Decoder was unable to decode a message for cardId! Program will exit.");
+                    Console.Read();
+                    Environment.Exit(-1);
+                }
+
+                //Try to parse the int32 for the bookstoreId, otherwise exit
+                Int32 publisherId = 0;
+                if (!Int32.TryParse(str[2], out publisherId))
+                {
+                    for (int i = 0; i < str.Length; i++)
+                    {
+                        Console.WriteLine(str[i] + "\n");
+                    }
+
+                    Console.WriteLine("Decoder was unable to decode a message for bookstoreId! Program will exit.");
                     Console.Read();
                     Environment.Exit(-1);
                 }
@@ -300,7 +310,7 @@ namespace P2_598_Doyal_Aletto
                     Environment.Exit(-1);
                 }
 
-                //Try to parse the double for the price of each book, otherwise exit
+                //Try to parse the DateTime object for the book, otherwise exit
                 DateTime timestamp = new DateTime();
                 if (!DateTime.TryParse(str[5], out timestamp))
                 {
@@ -314,8 +324,22 @@ namespace P2_598_Doyal_Aletto
                     Environment.Exit(-1);
                 }
 
+                //Try to parse the long for the starting milliseconds of the order, otherwise exit
+                long ms = 0;
+                if (!long.TryParse(str[6], out ms))
+                {
+                    for (int i = 0; i < str.Length; i++)
+                    {
+                        Console.WriteLine(str[i] + "\n");
+                    }
+
+                    Console.WriteLine("Decoder was unable to decode a message for DateTime! Program will exit.");
+                    Console.Read();
+                    Environment.Exit(-1);
+                }
+
                 //Construct all the pieces into an OrderObject
-                OrderObject o = new OrderObject(bookstoreId, cardId, str[2], numBooks, price, timestamp);
+                OrderObject o = new OrderObject(bookstoreId, cardId, publisherId, numBooks, price, timestamp, ms);
 
                 return o;
             }
