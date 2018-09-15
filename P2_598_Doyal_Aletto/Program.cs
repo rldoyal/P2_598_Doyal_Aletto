@@ -82,6 +82,9 @@ namespace P2_598_Doyal_Aletto
         {
             Random rnd = new Random();
 
+            // create the multi cell buffer
+            MultiCellBuffer mcb = new MultiCellBuffer(3);
+
             Bookstore bs = new Bookstore(1);
             Bookstore bs1 = new Bookstore(2);
 

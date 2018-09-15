@@ -8,30 +8,40 @@ namespace P2_598_Doyal_Aletto
 {
     public class OrderObject
     {
+<<<<<<< HEAD
         private Int32 senderId; //the identity of the sender
+=======
+        private Int32 bookStoreId; //the identity of the sender
+>>>>>>> 68dd10bca247dca189d5fd7b41eef58825b72776
         private Int32 cardNo; //integer that represents a credit card number
-        private string receiverId; //the identity of the receiver
+        private Int32 publisherId; //the identity of the receiver
         private Int32 amount; //represents the number of books to order
         private double unitPrice; //represents the unit price of the book received from the publisher
         private DateTime timestamp; //Timestamp the order was created
+        private long milliseconds;  // timestamp  in milliseconds
 
         //Constructor to be used by the encoder
-        public OrderObject(string sender, Int32 cNum, Int32 numBooks, double price)
+        public OrderObject(Int32 bsNum, Int32 cNum, Int32 pubid, Int32 numBooks, double price)
         {
-            senderId = sender;
+            bookStoreId = bsNum;
             cardNo = cNum;
-            receiverId = String.Empty;
+            publisherId = pubid;
             amount = numBooks;
             unitPrice = price;
             timestamp = DateTime.Now;
+            milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }
 
         //Constructor to be used by the decoder
+<<<<<<< HEAD
         public OrderObject(Int32 sender, Int32 cNum, string recId, Int32 numBooks, double price, DateTime now)
+=======
+        public OrderObject(Int32 bsNum, Int32 cNum, Int32 recId, Int32 numBooks, double price, DateTime now)
+>>>>>>> 68dd10bca247dca189d5fd7b41eef58825b72776
         {
-            senderId = sender;
+            bookStoreId = bsNum;
             cardNo = cNum;
-            receiverId = recId;
+            publisherId = recId;
             amount = numBooks;
             unitPrice = price;
             timestamp = now;
@@ -40,13 +50,13 @@ namespace P2_598_Doyal_Aletto
         //Get senderId
         public Int32 getSenderId()
         {
-            return senderId;
+            return bookStoreId;
         }
 
         //Set senderId
         public void setSenderId(Int32 s)
         {
-            senderId = s;
+            bookStoreId = s;
         }
 
         //Get cardNo
@@ -62,15 +72,15 @@ namespace P2_598_Doyal_Aletto
         }
 
         //Get receiverId
-        public string getReceiverId()
+        public Int32 getReceiverId()
         {
-            return receiverId;
+            return publisherId;
         }
 
         //Set receiverId
-        public void setReceiverId(string r)
+        public void setReceiverId(Int32 r)
         {
-            receiverId = r;
+            publisherId = r;
         }
 
         //Returns number of books in the order
@@ -101,6 +111,18 @@ namespace P2_598_Doyal_Aletto
         public DateTime getTimestamp()
         {
             return timestamp;
+        }
+
+        // set milliseconds
+        public void setMilliseconds( long ms)
+        {
+            milliseconds = ms;
+        }
+
+        // get for milliseconds
+        public long getMilliseconds()
+        {
+            return milliseconds;
         }
     }
 }
