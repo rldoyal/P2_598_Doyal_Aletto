@@ -107,7 +107,7 @@ namespace P2_598_Doyal_Aletto
             private Queue<OrderObject> orders; //Keeps recent orders in a queue to use in pricing model
             private TimeSpan reference; //Time object used to determine removal of order objects from queue
             private const double DEMAND = 4; //Sets demand for how many recent orders have been processed
-            private const double AVG_ORDER_SIZE = 50; //Reference for the average order size
+            //private const double AVG_ORDER_SIZE = 50; //Reference for the average order size
             
 
             //Constructor for the pricing model
@@ -216,7 +216,7 @@ namespace P2_598_Doyal_Aletto
                 double totalPrice = 
                     obj.getAmount() * obj.getUnitPrice() //Unit price multiplied by total quantity of books ordered
                     + obj.getAmount() * obj.getUnitPrice() * TAX_RATE //Add tax rate
-                    + (obj.getSenderId() * SHIPPING_PREMIUM); //Add shipping cost, assumed higher numbered bookstores are further away
+                    + (obj.getBookstoreId() * SHIPPING_PREMIUM); //Add shipping cost, assumed higher numbered bookstores are further away
                 
                
 
@@ -236,6 +236,20 @@ namespace P2_598_Doyal_Aletto
             {
                 //string array holds the values of the OrderObject
                 string[] str = s.Split(',');
+
+                //Try to parse the int32 for the bookstoreId, otherwise exit
+                Int32 bookstoreId = 0;
+                if (!Int32.TryParse(str[1], out bookstoreId))
+                {
+                    for (int i = 0; i < str.Length; i++)
+                    {
+                        Console.WriteLine(str[i] + "\n");
+                    }
+
+                    Console.WriteLine("Decoder was unable to decode a message for bookstoreId! Program will exit.");
+                    Console.Read();
+                    Environment.Exit(-1);
+                }
 
                 //Try to parse the int32 for the cardId, otherwise exit
                 Int32 cardId = 0;
@@ -294,7 +308,7 @@ namespace P2_598_Doyal_Aletto
                 }
 
                 //Construct all the pieces into an OrderObject
-                OrderObject o = new OrderObject(str[0], cardId, str[2], numBooks, price, timestamp);
+                OrderObject o = new OrderObject(bookstoreId, cardId, str[2], numBooks, price, timestamp);
 
                 return o;
             }
