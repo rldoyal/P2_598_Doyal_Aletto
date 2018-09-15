@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
-using static P2_598_Doyal_Aletto.Aletto;
-using static P2_598_Doyal_Aletto.Aletto.Publisher;
+using static P2_598_Doyal_Aletto.Publisher;
 using static P2_598_Doyal_Aletto.Bookstore;
 
 namespace P2_598_Doyal_Aletto
@@ -12,18 +11,69 @@ namespace P2_598_Doyal_Aletto
         const Int32 MaxBookQuanity = 500;  // max number of books allowed in the store
         //static Int32 StoreInventory = 250;  // initial book inventory set at 500.  Max Books = 500.
         //bool NeedDemandThread = true; // variable to start/stop demand thread
-        static double  CurrentPrice = 200;
+        static double pub1Price = 0;
+        static double pub2Price = 0;
+        ReaderWriterLockSlim pubLock1 = new ReaderWriterLockSlim();
+        ReaderWriterLockSlim pubLock2 = new ReaderWriterLockSlim();
 
-        public double getCurrentPrice()
+        //Returns price of publisher 1
+        public double get_Pub1_Price()
         {
-            return CurrentPrice;
+            pubLock1.EnterReadLock();
+            try
+            {
+                return pub1Price;
+            }
+            finally
+            {
+                pubLock1.ExitReadLock();
+            }
         }
-        public void setCurrentPrice( Int32 price)
+
+        //Sets price of publisher 1
+        public void set_Pub1_Price(double price)
         {
-            CurrentPrice = price;
-            Console.WriteLine("\t\t\t Reseting Price = {0}", price);
+            pubLock1.EnterWriteLock();
+            try
+            {
+                pub1Price = price;
+            }
+            finally
+            {
+                pubLock1.ExitWriteLock();
+            }
+        }
+
+        //Returns price of publisher 2
+        public double get_Pub2_Price()
+        {
+            pubLock2.EnterReadLock();
+            try
+            {
+                return pub2Price;
+            }
+            finally
+            {
+                pubLock2.ExitReadLock();
+            }
+        }
+
+        //Sets price of publisher 2
+        public void set_Pub2_Price(double price)
+        {
+            pubLock2.EnterWriteLock();
+            try
+            {
+                pub2Price = price;
+            }
+            finally
+            {
+                pubLock2.ExitWriteLock();
+            }
         }
     }
+
+
     class Program
     {
         public static GlobalVariables GV = new GlobalVariables();
@@ -64,7 +114,7 @@ namespace P2_598_Doyal_Aletto
         public static void TestPricingModel()
         {
             DateTime now = new DateTime();
-            Publisher p = new Publisher();
+            Publisher p = new Publisher(1);
             Random rdm = new Random();
 
 
