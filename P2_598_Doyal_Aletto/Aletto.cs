@@ -17,26 +17,33 @@ namespace P2_598_Doyal_Aletto
         Decoder decoder; //Object used to transform strings into OrderObjects
         private Int32 name; //Name of the Publisher, simple int is used for speed
         public const double TAX_RATE = .05; //Used to add tax to order processing
-        public const double SHIPPING_PREMIUM = 2.5;
+        public const double SHIPPING_PREMIUM = 5; //Cost for shipping
+        public delegate void PriceCut(double price); //Delegate for use in subscribing to price cut events
+        public static event PriceCut priceCutEvent; //Event that issues price cuts
+        //Delegate for use in subscribing to order processed events
+        public delegate void OrderProcessed(Int32 bookstoreId, Int32 publisherID, 
+            Int32 numBooks, double unitPrice, double totalPrice, Int32 timeStart, Int32 timeStop);
 
 
         //Publisher Constructor
-        public Publisher(Int32 label, double ship)
+        public Publisher(Int32 label)
         {
             p = 0;
             modeler = new PricingModel();
             books = RESTOCK_AMT;
             decoder = new Decoder();
             name = label;
+            
         }
 
 
         //Publisher Thread entry
         public static void runPublisher()
         {
+            string bufferedString;
             while (p < 20)
             {
-                
+                if()
                 Thread.Sleep(SLEEP_TIME);
             }
         }
