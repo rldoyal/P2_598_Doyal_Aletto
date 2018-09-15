@@ -8,7 +8,7 @@ namespace P2_598_Doyal_Aletto
 {
     public class OrderObject
     {
-        private string senderId; //the identity of the sender
+        private Int32 senderId; //the identity of the sender
         private Int32 cardNo; //integer that represents a credit card number
         private string receiverId; //the identity of the receiver
         private Int32 amount; //represents the number of books to order
@@ -27,7 +27,7 @@ namespace P2_598_Doyal_Aletto
         }
 
         //Constructor to be used by the decoder
-        public OrderObject(string sender, Int32 cNum, string recId, Int32 numBooks, double price, DateTime now)
+        public OrderObject(Int32 sender, Int32 cNum, string recId, Int32 numBooks, double price, DateTime now)
         {
             senderId = sender;
             cardNo = cNum;
@@ -38,13 +38,13 @@ namespace P2_598_Doyal_Aletto
         }
 
         //Get senderId
-        public string getSenderId()
+        public Int32 getSenderId()
         {
             return senderId;
         }
 
         //Set senderId
-        public void setSenderId(string s)
+        public void setSenderId(Int32 s)
         {
             senderId = s;
         }
