@@ -71,7 +71,7 @@ namespace P2_598_Doyal_Aletto
                         "\t\t\t Amount of Books: {3}\n" +
                         "\t\t\t Unit Price : {4}\n" +
                         "\t\t\t Order Placed at : {5}\n",
-                    newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPurlisherId(), newOrder.getAmount(),
+                    newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
                     newOrder.getUnitPrice(), newOrder.getTimestamp());
                 // encode the order object
                  String eOrder = Encoder(newOrder);
@@ -123,7 +123,7 @@ namespace P2_598_Doyal_Aletto
             // build CSV String
             orderStr = order.getBookStoreId().ToString(); ;
             orderStr += "," + order.getCardNo().ToString();
-            orderStr += "," + order.getPurlisherId().ToString();
+            orderStr += "," + order.getPublisherId().ToString();
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
             orderStr += "," + order.getTimestamp();
@@ -198,7 +198,7 @@ namespace P2_598_Doyal_Aletto
                     "\t\t\t Amount of Books: {3}\n" +
                     "\t\t\t Unit Price : {4}\n" +
                     "\t\t\t Order Placed at : {5}\n",
-                newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPurlisherId(), newOrder.getAmount(),
+                newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
                 newOrder.getUnitPrice(), newOrder.getTimestamp());
                 // encode the order object
                 String eOrder = Encoder(newOrder);
