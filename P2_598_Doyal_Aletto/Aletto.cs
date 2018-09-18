@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+// All code in this file was developed by Anthony Aletto 
+
 
 namespace P2_598_Doyal_Aletto
 {
@@ -316,7 +318,7 @@ namespace P2_598_Doyal_Aletto
                     + (obj.getBookStoreId() * SHIPPING_PREMIUM); //Add shipping cost, assumed higher numbered bookstores are further away
                 
                 //Initiate event signifying order was processed
-                orderComplete(obj.getBookStoreId(), obj.getPublisherId(), obj.getAmount(), obj.getUnitPrice(), totalPrice, obj.getMilliseconds(), DateTime.Now.Millisecond);
+                orderComplete(obj.getBookStoreId(), obj.getPublisherId(), obj.getAmount(), obj.getUnitPrice(), totalPrice, obj.getTicks(), DateTime.Now.Ticks);
             }
         }
 

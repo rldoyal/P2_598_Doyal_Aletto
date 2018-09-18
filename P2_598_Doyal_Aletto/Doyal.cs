@@ -16,20 +16,21 @@ namespace P2_598_Doyal_Aletto
     {
 
 
-        private double LastPrice = 200.00;
-        private double CurrentPrice = 0.00;
-        private Int32 StoreNumber = 0;
-        private Int32 StoreInventory = 100;
+        private double LastPrice = 200.00; // initial price
+        private double CurrentPrice = 0.00; // initial current price
+        private Int32 StoreNumber = 0; // variable to hold the store number 
+        private Int32 StoreInventory = 100; // starting inventory of store
         const Int32 MAX_INVENTORY = 1000;  // max number of books the store can hold
 
 
 
         public Bookstore(int i)
         {
-            StoreNumber = i;
+            StoreNumber = i; // set the store number
         }
 
-        // functional thread for the bookstore.  It will generate an order every 2 seconds.
+        // functional thread for the bookstore.  
+        // THis thread will generate demand, check price, and create purchase orders if necessary.
         public void BookStoreFunc()
         {
 
@@ -60,30 +61,23 @@ namespace P2_598_Doyal_Aletto
                     CurrentPrice = P2;
                 }
 
+                // using the lowest price, create an order.  This method can return NULL if no books are needed.
                  newOrder = CreateOrder(PubNum);
 
-                if (newOrder != null)
+                if (newOrder != null)  // See if we need to move forward with the order for the store.
                 { 
-                    //Console.WriteLine("\t\t New Order Created... \n" +
-                    //    "\t\t\t SenderID : {0}\n" +
-                    //    "\t\t\t CardNo : {1}\n" +
-                    //    "\t\t\t Publisher : {2}\n" +
-                    //    "\t\t\t Amount of Books: {3}\n" +
-                    //    "\t\t\t Unit Price : {4}\n" +
-                    //    "\t\t\t Order Placed at : {5}\n",
-                    //newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
-                    //newOrder.getUnitPrice(), newOrder.getTimestamp());
+                    
                 // encode the order object
                  String eOrder = Encoder(newOrder);
                     // add to multicell buffer
                     BufferString mybString = new BufferString();
                     mybString.setBufferString(eOrder, PubNum);
                     Program.mcb.setOneCell(mybString);
-                    Console.WriteLine("\t\t ^^^^^  order created  for store : {0}", StoreNumber);
+                    Console.WriteLine("\t\t ^^^  order created  for store {0} for {1} books", StoreNumber, newOrder.getAmount() );
                 }
                 
                 else
-                    Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
+                    Console.WriteLine("\t\t *** No order created  for store {0}", StoreNumber);
                 //}
                 LastPrice = CurrentPrice; // set the last known price
                 Thread.Sleep(1000); // sleep for 2 seconds
@@ -106,7 +100,7 @@ namespace P2_598_Doyal_Aletto
             // Set the last price
 
             DateTime timeStamp = DateTime.Now;
-            long ms = DateTime.Now.Millisecond;
+            long ms = DateTime.Now.Ticks;
             if (amountBooks > 0)
             {
                 OrderObject myObj = new OrderObject(BookStore, CardNo, pubID, amountBooks, CurrentPrice, timeStamp, ms);
@@ -128,7 +122,8 @@ namespace P2_598_Doyal_Aletto
             orderStr += "," + order.getAmount().ToString();
             orderStr += "," + order.getUnitPrice().ToString();
             orderStr += "," + order.getTimestamp();
-            orderStr += "," + order.getMilliseconds().ToString();
+            orderStr += "," + order.getTicks().ToString();
+           
 
             return orderStr; // return the encoded string just created.
         }
@@ -190,29 +185,22 @@ namespace P2_598_Doyal_Aletto
             // see if I want to buy at that price
             OrderObject newOrder = CreateOrder(PubNum);
 
-            Console.WriteLine(" *****************  BOOK SALE from Publisher # {0}   Book Store {1}    Price{2:C}    *******************", PubNum, StoreNumber, price);
+            if (StoreNumber == 0)  // Every store will get this event but I only need noe store to write it out!!
+                Console.WriteLine(" *****************  BOOK SALE from Publisher # {0}  Price{1:C}    *******************\n", PubNum, price);
+
             if (newOrder != null)
             {
-                //Console.WriteLine("\t\t New Order Created... \n" +
-                //    "\t\t\t SenderID : {0}\n" +
-                //    "\t\t\t CardNo : {1}\n" +
-                //    "\t\t\t Publisher : {2}\n" +
-                //    "\t\t\t Amount of Books: {3}\n" +
-                //    "\t\t\t Unit Price : {4}\n" +
-                //    "\t\t\t Order Placed at : {5}\n",
-                //newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
-                //newOrder.getUnitPrice(), newOrder.getTimestamp());
-                // encode the order object
+                
                 String eOrder = Encoder(newOrder);
                 // add to multicell buffer
                 BufferString mybString = new BufferString();
                 mybString.setBufferString(eOrder, PubNum);
                 Program.mcb.setOneCell(mybString); // order the books.
-                Console.WriteLine("\t\t ^^^^^  order created  for store : {0}", StoreNumber);
+                Console.WriteLine("\t\t ^^^  order created  for store {0} for {1} books", StoreNumber, newOrder.getAmount());
             }
 
             else
-                Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
+                Console.WriteLine("\t\t *** No order created  for store {0}", StoreNumber);
         }
 
         
@@ -225,9 +213,9 @@ namespace P2_598_Doyal_Aletto
             {
                 if (BookStore == StoreNumber)
                 {
-                    Console.WriteLine("Completed Order for Store {0}", BookStore);
+                    Console.WriteLine("\nCompleted Order for Store {0}", BookStore);
                     Console.WriteLine("\tPublisher {0}\n\tNumber of Books {1}\n\tUnit Price : {2:C}", Publisher, NumBooks, UnitPrice);
-                    Console.WriteLine("\tTotal Price (With Tax and Shipping) : {0:C}\n\tOrder was created in {1} milliseconds", totalPrice, (CompleteTime - createTime));
+                    Console.WriteLine("\tTotal Price (With Tax and Shipping) : {0:C}\n\tOrder was created in {1} milliseconds\n", totalPrice, TimeSpan.FromTicks(CompleteTime - createTime));
                 }
             }
         }
