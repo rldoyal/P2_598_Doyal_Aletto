@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+
+// All code in this file was written jointly by Roy Doyal and Anthony Aletto
+
+
 namespace P2_598_Doyal_Aletto
 {
 
+    // buffer class that is being used in the multicell buffer.  We stripped out the publisher number so when the 
+    // publisher threads are looking for orders, they can quickly look instead of parsing a string.
     public class BufferString
     {
         private string bufferStr;
@@ -43,6 +49,8 @@ namespace P2_598_Doyal_Aletto
         }
     }
 
+    // Mulit cell buffer -- link between retail stores and publishers.
+    // BufferString objects are the actual stored elements.
     public class MultiCellBuffer
     {
         public BufferString[] buffers;
