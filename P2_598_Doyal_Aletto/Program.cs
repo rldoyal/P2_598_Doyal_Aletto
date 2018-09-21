@@ -213,6 +213,8 @@ namespace P2_598_Doyal_Aletto
             P1.Start();
             P2.Start();
 
+            // Subscribe to events
+            
            
 
             Thread[] retailStores = new Thread[NumStores];
@@ -220,10 +222,18 @@ namespace P2_598_Doyal_Aletto
             {
                 // start n retail stores
                 Bookstore bs = new Bookstore(i);
+                Publisher.priceCutEvent += new PriceCut(bs.BookSale);
+                OrderProcessing.orderComplete += new OrderProcessed(bs.CompletedSale);
                 retailStores[i] = new Thread(new ThreadStart(bs.BookStoreFunc));
                 retailStores[i].Start();
             }
 
+
+            while (P1.IsAlive || P2.IsAlive)
+            {
+                Thread.Sleep(1000);
+            }
+            BookStoreThreadRunning = false;
 
             //TestBookStore();
 

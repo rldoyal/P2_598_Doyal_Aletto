@@ -108,9 +108,9 @@ namespace P2_598_Doyal_Aletto
                             double temp = currentPrice;
                             currentPrice = modeler.calcPrice(obj); //Calculate new price and store in local variable
                             Program.GV.set_Pub2_Price(currentPrice);
-                            
-                            //Issue a price cut event if the price dropped by 25%
-                            if (1 - (currentPrice/ temp) >= .25)
+
+
+                            if (1 - (currentPrice / temp) >= .25)
                             {
                                 currentPrice = Program.GV.get_Pub2_Price();
                                 priceCutEvent(currentPrice, name);

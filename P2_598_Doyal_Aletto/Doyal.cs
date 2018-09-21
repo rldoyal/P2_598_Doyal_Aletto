@@ -37,7 +37,7 @@ namespace P2_598_Doyal_Aletto
             while (Program.BookStoreThreadRunning)
             {
 
-                Console.WriteLine("\n\n");
+                //Console.WriteLine("\n\n");
                 OrderObject newOrder;
                 int PubNum = 0;
                 //CurrentPrice = pub1.getPrice();
@@ -48,7 +48,7 @@ namespace P2_598_Doyal_Aletto
                 // check for lowest price
                 double p1 = Program.GV.get_Pub1_Price();
                 double P2 = Program.GV.get_Pub2_Price();
-                Console.WriteLine(" pub1 price : {0}, pub2 price : {1}", p1, P2);
+                //Console.WriteLine(" pub1 price : {0}, pub2 price : {1}", p1, P2);
                 if (p1 < P2)
                 {
                     PubNum = 1;
@@ -64,22 +64,23 @@ namespace P2_598_Doyal_Aletto
 
                 if (newOrder != null)
                 { 
-                    Console.WriteLine("\t\t New Order Created... \n" +
-                        "\t\t\t SenderID : {0}\n" +
-                        "\t\t\t CardNo : {1}\n" +
-                        "\t\t\t Publisher : {2}\n" +
-                        "\t\t\t Amount of Books: {3}\n" +
-                        "\t\t\t Unit Price : {4}\n" +
-                        "\t\t\t Order Placed at : {5}\n",
-                    newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
-                    newOrder.getUnitPrice(), newOrder.getTimestamp());
+                    //Console.WriteLine("\t\t New Order Created... \n" +
+                    //    "\t\t\t SenderID : {0}\n" +
+                    //    "\t\t\t CardNo : {1}\n" +
+                    //    "\t\t\t Publisher : {2}\n" +
+                    //    "\t\t\t Amount of Books: {3}\n" +
+                    //    "\t\t\t Unit Price : {4}\n" +
+                    //    "\t\t\t Order Placed at : {5}\n",
+                    //newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
+                    //newOrder.getUnitPrice(), newOrder.getTimestamp());
                 // encode the order object
                  String eOrder = Encoder(newOrder);
                     // add to multicell buffer
                     BufferString mybString = new BufferString();
                     mybString.setBufferString(eOrder, PubNum);
                     Program.mcb.setOneCell(mybString);
-            }
+                    Console.WriteLine("\t\t ^^^^^  order created  for store : {0}", StoreNumber);
+                }
                 
                 else
                     Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
@@ -99,7 +100,7 @@ namespace P2_598_Doyal_Aletto
 
         OrderObject CreateOrder(Int32 pubID)
         {
-            Int32 BookStore = Int32.Parse(Thread.CurrentThread.Name);
+            Int32 BookStore = StoreNumber;
             Int32 CardNo = 5000 + pubID;
             Int32 amountBooks = BooksNeeded();
             // Set the last price
@@ -140,13 +141,13 @@ namespace P2_598_Doyal_Aletto
 
             Int32 BooksSold = rnd.Next(0, StoreInventory); //  Might make no sales and might sell all inventory
             StoreInventory -= BooksSold; // update the inventory
-            Console.WriteLine("Store {0} sold {1} books, new store Inventory {2}", StoreNumber, BooksSold, StoreInventory);
+            //Console.WriteLine("Store {0} sold {1} books, new store Inventory {2}", StoreNumber, BooksSold, StoreInventory);
 
         }
 
         void AddStoreInventory(Int32 newBooks)
         {
-            Console.WriteLine("Adding {0} new books.  Thread Name : {1}", newBooks, StoreNumber);
+            //Console.WriteLine("Adding {0} new books.  Thread Name : {1}", newBooks, StoreNumber);
             StoreInventory += newBooks;
         }
 
@@ -156,8 +157,8 @@ namespace P2_598_Doyal_Aletto
             Int32 booksWanted = 0;
 
             // if we are low on books, 50 or less, then buy some books to get up back to 300 books
-            Console.WriteLine("*** Checking to see if we need more books for Store {0}, Inventory {1}, last price {2}, current price{3}",
-                StoreNumber, StoreInventory, LastPrice, CurrentPrice);
+            //Console.WriteLine("*** Checking to see if we need more books for Store {0}, Inventory {1}, last price {2}, current price{3}",
+               // StoreNumber, StoreInventory, LastPrice, CurrentPrice);
             if (CurrentPrice < LastPrice)
             {
                 double priceDiff = ((LastPrice - CurrentPrice) / LastPrice);
@@ -183,42 +184,51 @@ namespace P2_598_Doyal_Aletto
 
         // event handlers
         // Price cut event
-        public void BookSale(int PubNum, double price)
+        public void BookSale( double price,Int32 PubNum)
         {
             // books are on sale for a price.
             // see if I want to buy at that price
             OrderObject newOrder = CreateOrder(PubNum);
 
+            Console.WriteLine(" *****************  BOOK SALE from Publisher # {0}   Book Store {1}    Price{2:C}    *******************", PubNum, StoreNumber, price);
             if (newOrder != null)
             {
-                Console.WriteLine("\t\t New Order Created... \n" +
-                    "\t\t\t SenderID : {0}\n" +
-                    "\t\t\t CardNo : {1}\n" +
-                    "\t\t\t Publisher : {2}\n" +
-                    "\t\t\t Amount of Books: {3}\n" +
-                    "\t\t\t Unit Price : {4}\n" +
-                    "\t\t\t Order Placed at : {5}\n",
-                newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
-                newOrder.getUnitPrice(), newOrder.getTimestamp());
+                //Console.WriteLine("\t\t New Order Created... \n" +
+                //    "\t\t\t SenderID : {0}\n" +
+                //    "\t\t\t CardNo : {1}\n" +
+                //    "\t\t\t Publisher : {2}\n" +
+                //    "\t\t\t Amount of Books: {3}\n" +
+                //    "\t\t\t Unit Price : {4}\n" +
+                //    "\t\t\t Order Placed at : {5}\n",
+                //newOrder.getBookStoreId(), newOrder.getCardNo(), newOrder.getPublisherId(), newOrder.getAmount(),
+                //newOrder.getUnitPrice(), newOrder.getTimestamp());
                 // encode the order object
                 String eOrder = Encoder(newOrder);
                 // add to multicell buffer
                 BufferString mybString = new BufferString();
                 mybString.setBufferString(eOrder, PubNum);
                 Program.mcb.setOneCell(mybString); // order the books.
+                Console.WriteLine("\t\t ^^^^^  order created  for store : {0}", StoreNumber);
             }
 
+            else
+                Console.WriteLine("\t\t *** No order created  for store : {0}", StoreNumber);
         }
+
+        
 
         // event for a completed order
         public void CompletedSale(Int32 BookStore, Int32 Publisher, Int32 NumBooks, double UnitPrice, double totalPrice, long createTime, long CompleteTime)
         {
             // see if I need to deal with this event
-            if (BookStore == StoreNumber)
+            lock (this)
             {
-                Console.WriteLine("Completed Order for Store {0}", BookStore);
-                Console.WriteLine("\tPublisher {0}\n\tNumber of Books {1}\n\tUnit Price : {2:C}", Publisher, NumBooks, UnitPrice);
-                Console.WriteLine("\tTotal Price (With Tax and Shipping) : {0:C}\n\tOrder was created in {1} milliseconds", totalPrice, (CompleteTime - createTime));
+                if (BookStore == StoreNumber)
+                {
+                    Console.WriteLine("Completed Order for Store {0}", BookStore);
+                    Console.WriteLine("\tPublisher {0}\n\tNumber of Books {1}\n\tUnit Price : {2:C}", Publisher, NumBooks, UnitPrice);
+                    Console.WriteLine("\tTotal Price (With Tax and Shipping) : {0:C}\n\tOrder was created in {1} milliseconds", totalPrice, (CompleteTime - createTime));
+                }
             }
         }
     }
