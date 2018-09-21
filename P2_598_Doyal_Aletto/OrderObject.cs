@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace P2_598_Doyal_Aletto
 {
+    /// <summary>
+    /// Order Object -- This object contains one data for one order.  
+    /// The publisher and Retail threads will use this class for order information.
+    /// One object will be created for each order.
+    /// </summary>
     public class OrderObject
     {
         private Int32 bookStoreId; //the identity of the sender

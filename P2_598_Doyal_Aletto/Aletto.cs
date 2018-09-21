@@ -3,7 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-// All code in this file was developed by Anthony Aletto 
+
+/// <summary>
+/// All code for PRoject #2 in this file was written/developed by Anthony Aletto
+/// 
+/// This file contains the Publisher code, to include the pricing model.
+/// 
+/// The publisher sets the price based on demand from recent orders and quanity of books in warehouse.
+/// 
+/// </summary>
 
 
 namespace P2_598_Doyal_Aletto
@@ -14,6 +22,9 @@ namespace P2_598_Doyal_Aletto
     public delegate void OrderProcessed(Int32 bookstoreId, Int32 publisherID,
         Int32 numBooks, double unitPrice, double totalPrice, long timeStart, long timeStop);
 
+    /// <summary>
+    ///  The publisher class contains all the methods 
+    /// </summary>
     
     public class Publisher
     {
@@ -49,7 +60,17 @@ namespace P2_598_Doyal_Aletto
         }
 
 
-        //Publisher Thread entry
+        /// <summary>
+        /// runPublisher -- This method is the method that will be executed in the thread.
+        /// The publisher does:
+        /// 1) Check the multicell buffer for orders
+        /// 2) if order, then read, and processed by executing a OrderProcess Thread
+        /// 3) Check warehouse for book quality
+        /// 4) calcuate the new price
+        /// 5) Schedule an event on price if the reduction is greater thatn 25%
+        /// 6) Sleep thread for 50ms
+        /// 7) repeat.
+        /// </summary>
         public void runPublisher()
         {
             String bufferedString = String.Empty;
@@ -200,7 +221,11 @@ namespace P2_598_Doyal_Aletto
             return decoder;
         }
 
-        //Class used to calculate unit price of a book
+        /// <summary>
+        /// Pricing Model Class
+        /// Determines the book price based on recent order activities and quanity of books.
+        /// 
+        /// </summary>
         public class PricingModel
         {
             private Int32 numOrders; //Numbers of past orders relevant in pricing model calculation
@@ -291,7 +316,13 @@ namespace P2_598_Doyal_Aletto
 
         }
 
-        //Class used to instantiate threads to process orders
+        /// <summary>
+        /// Order PRocessing
+        /// This class houses the OrderProcessingThread that is executed to complete and order
+        /// This thread will calculate the final price with shipping and Tax
+        /// Fire and event to the retail stores letting them know the oorder was completed.
+        /// 
+        /// </summary>
         public class OrderProcessing
         {
             public static event OrderProcessed orderComplete;     

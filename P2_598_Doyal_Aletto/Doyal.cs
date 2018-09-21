@@ -31,6 +31,17 @@ namespace P2_598_Doyal_Aletto
 
         // functional thread for the bookstore.  
         // THis thread will generate demand, check price, and create purchase orders if necessary.
+        /// <summary>
+        /// Functional method for thread.
+        /// Sell Books  -- This will create demand.  The amount of books is random
+        /// The process in this thread is to get the price from the publishers (use the global varialbes)
+        /// Pick the lowest price
+        /// See if we need to purchase books
+        /// create and order
+        /// Encode the order
+        /// Push onto the multicell buffer
+        /// Repeat...
+        /// </summary>
         public void BookStoreFunc()
         {
 
@@ -91,7 +102,11 @@ namespace P2_598_Doyal_Aletto
         {
             return StoreInventory;
         }
-
+        /// <summary>
+        /// Create An order of books is necessary...
+        /// </summary>
+        /// <param name="pubID"></param>
+        /// <returns></returns>
         OrderObject CreateOrder(Int32 pubID)
         {
             Int32 BookStore = StoreNumber;
@@ -129,7 +144,9 @@ namespace P2_598_Doyal_Aletto
         }
 
 
-        // sell books from the store -- create demand
+        /// <summary>
+        /// Sell a random number of books
+        /// </summary>
         void SellBooks()
         {
             Random rnd = new Random();
@@ -145,7 +162,10 @@ namespace P2_598_Doyal_Aletto
             //Console.WriteLine("Adding {0} new books.  Thread Name : {1}", newBooks, StoreNumber);
             StoreInventory += newBooks;
         }
-
+        /// <summary>
+        /// Determine if we need to purchase books.
+        /// </summary>
+        /// <returns></returns>
         Int32 BooksNeeded()
         {
             // TODO :  Update this method to include pricing but for now, just do basic
@@ -177,8 +197,14 @@ namespace P2_598_Doyal_Aletto
             return booksWanted;
         }
 
-        // event handlers
-        // Price cut event
+        // EVENT HANDLERS
+        /// <summary>
+        /// 
+        /// Event handler for  Book Sale broadcasted by publisher thread
+        /// 
+        /// </summary>
+        /// <param name="price"></param>
+        /// <param name="PubNum"></param>
         public void BookSale( double price,Int32 PubNum)
         {
             // books are on sale for a price.
@@ -205,7 +231,16 @@ namespace P2_598_Doyal_Aletto
 
         
 
-        // event for a completed order
+        /// <summary>
+        /// Event Handler for completed Bookstore Sale
+        /// </summary>
+        /// <param name="BookStore"></param>
+        /// <param name="Publisher"></param>
+        /// <param name="NumBooks"></param>
+        /// <param name="UnitPrice"></param>
+        /// <param name="totalPrice"></param>
+        /// <param name="createTime"></param>
+        /// <param name="CompleteTime"></param>
         public void CompletedSale(Int32 BookStore, Int32 Publisher, Int32 NumBooks, double UnitPrice, double totalPrice, long createTime, long CompleteTime)
         {
             // see if I need to deal with this event

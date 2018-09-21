@@ -3,9 +3,20 @@ using System.Threading;
 using static P2_598_Doyal_Aletto.Publisher;
 using static P2_598_Doyal_Aletto.Bookstore;
 
+
+// Program.cs file 
+//
+/// <summary>
+/// This file is part of Team Aletto Doyal Project #2
+///  contains the source code the Global Varialbes and the Main Program
+///  
+/// </summary>
 namespace P2_598_Doyal_Aletto
 {
-
+    /// <summary>
+    /// Global Varialbes -- To include read/write locks around price data
+    /// Shared by both BookStore and Publisher classes through the main program
+    /// </summary>
     class GlobalVariables
     {
         const Int32 MaxBookQuanity = 500;  // max number of books allowed in the store
@@ -73,12 +84,19 @@ namespace P2_598_Doyal_Aletto
         }
     }
 
-
+    /// <summary>
+    /// Main Program... 
+    /// starts 2 publishes threads and 5 retail stores
+    /// </summary>
     class Program
     {
         public static GlobalVariables GV = new GlobalVariables();
         public static bool BookStoreThreadRunning = true;
-        public static MultiCellBuffer mcb;
+        public static MultiCellBuffer mcb; // multicell buffer
+
+        /// <summary>
+        /// Test Bookstore Code -- function to test the bookstore class
+        /// </summary>
         public static void TestBookStore()
  
         {
@@ -128,7 +146,9 @@ namespace P2_598_Doyal_Aletto
             BookStoreThreadRunning = false; // shut off threads
 
         }
-
+        /// <summary>
+        /// Test method for the pricing model.  
+        /// </summary>
         public static void TestPricingModel()
         {
             DateTime now = new DateTime();
@@ -157,7 +177,9 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
-        //Tests for the encoder and decoders
+        /// <summary>
+        /// Testing method for the encoder and decode functions.
+        /// </summary>        
         public static void EncodeDecodeTest()
         {
             DateTime now = new DateTime();
@@ -193,7 +215,16 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
-
+        /// <summary>
+        /// Main program for Project 2
+        /// 
+        /// The creates the multicell buffer, publishers, and Retail stores. 
+        ///     There are 2 publisher threads
+        ///     There are 5 retailer threads
+        ///     There is one Multicell buffer.
+        ///     As long as either publisher thread is running, the retail store threads will stay active.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
 
