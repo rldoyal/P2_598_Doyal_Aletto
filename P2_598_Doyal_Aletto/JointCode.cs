@@ -3,9 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+
+// All code in this file was written jointly by Roy Doyal and Anthony Aletto
+
+/// <summary>
+/// Joint Code written by Roy Doyal and Anthony Aletto
+/// 
+/// Thi file contains the BufferString class and the MultiCell buffer
+/// The bufferString class use used as the array element type for the Multicell buffer.
+/// 
+/// The multicell buffer is the conduit between the retail threads and the publisher threads.  
+/// The multicell buffer uses Semiphores, Mutexs, and read/write locks to protect the data.
+/// </summary>
+
 namespace P2_598_Doyal_Aletto
 {
 
+    // buffer class that is being used in the multicell buffer.  We stripped out the publisher number so when the 
+    // publisher threads are looking for orders, they can quickly look instead of parsing a string.
     public class BufferString
     {
         private string bufferStr;
@@ -43,6 +58,8 @@ namespace P2_598_Doyal_Aletto
         }
     }
 
+    // Mulit cell buffer -- link between retail stores and publishers.
+    // BufferString objects are the actual stored elements.
     public class MultiCellBuffer
     {
         public BufferString[] buffers;
@@ -78,6 +95,11 @@ namespace P2_598_Doyal_Aletto
             }
         }
 
+        /// <summary>
+        /// Sets one open buffer cell with data.  
+        /// If cells are all full, the calling thread is blokced.
+        /// </summary>
+        /// <param name="data"></param>
         public void setOneCell(BufferString data)
         {
             write_pool.WaitOne();
@@ -102,7 +124,12 @@ namespace P2_598_Doyal_Aletto
                 Monitor.Pulse(this);
             }
         }
-
+        /// <summary>
+        /// Gets one cell of data -- to be read by the publisher.
+        /// The data is only read if the publisher number in the data cell matches the publisher number
+        /// </summary>
+        /// <param name="pubNum"></param>
+        /// <returns></returns>
         public String getOneCell(Int32 pubNum)
         {
             String outStr = null;

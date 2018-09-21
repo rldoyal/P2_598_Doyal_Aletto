@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace P2_598_Doyal_Aletto
 {
+    /// <summary>
+    /// Order Object -- This object contains one data for one order.  
+    /// The publisher and Retail threads will use this class for order information.
+    /// One object will be created for each order.
+    /// </summary>
     public class OrderObject
     {
         private Int32 bookStoreId; //the identity of the sender
@@ -14,7 +19,7 @@ namespace P2_598_Doyal_Aletto
         private Int32 amount; //represents the number of books to order
         private double unitPrice; //represents the unit price of the book received from the publisher
         private DateTime timestamp; //Timestamp the order was created
-        private long milliseconds;  // timestamp  in milliseconds
+        private long timeTicks;  // timestamp  in milliseconds
 
         //Constructor to be used by the encoder
         public OrderObject(Int32 bsNum, Int32 cNum, Int32 pubid, Int32 numBooks, double price)
@@ -25,11 +30,11 @@ namespace P2_598_Doyal_Aletto
             amount = numBooks;
             unitPrice = price;
             timestamp = DateTime.Now;
-            milliseconds = DateTime.Now.Millisecond;
+            timeTicks = DateTime.Now.Ticks;;
         }
 
         //Constructor to be used by the decoder
-        public OrderObject(Int32 bsNum, Int32 cNum, Int32 recId, Int32 numBooks, double price, DateTime now, long ms)
+        public OrderObject(Int32 bsNum, Int32 cNum, Int32 recId, Int32 numBooks, double price, DateTime now, long ticks)
         {
             bookStoreId = bsNum;
             cardNo = cNum;
@@ -37,7 +42,7 @@ namespace P2_598_Doyal_Aletto
             amount = numBooks;
             unitPrice = price;
             timestamp = now;
-            milliseconds = ms;
+            timeTicks = ticks;
 
         }
 
@@ -108,15 +113,15 @@ namespace P2_598_Doyal_Aletto
         }
 
         // set milliseconds
-        public void setMilliseconds( long ms)
+        public void setTicks( long ticks)
         {
-            milliseconds = ms;
+            timeTicks = ticks;
         }
 
         // get for milliseconds
-        public long getMilliseconds()
+        public long getTicks()
         {
-            return milliseconds;
+            return timeTicks;
         }
     }
 }
